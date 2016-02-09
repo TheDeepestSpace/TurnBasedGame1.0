@@ -2,8 +2,8 @@ language: android
 script: "./gradlew build"
 android:
   components:
+    - tools
     - build-tools-23.0.2
     - android-23
-    - platform-tools
 before_install:
  - chmod +x gradlew
