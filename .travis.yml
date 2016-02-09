@@ -2,7 +2,7 @@ language: android
 script: "./gradlew build"
 android:
   components:
-    - tools
+    - platform-tools
     - build-tools-23.0.2
     - android-23
 before_install:
