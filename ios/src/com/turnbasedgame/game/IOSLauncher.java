@@ -5,13 +5,13 @@ import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
-import com.turnbasedgame.game.TurnBasedGane;
+import com.turnbasedgame.game.TurnBasedGame;
 
 public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new TurnBasedGane(), config);
+        return new IOSApplication(new TurnBasedGame(), config);
     }
 
     public static void main(String[] argv) {
