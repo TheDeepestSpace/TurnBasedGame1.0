@@ -32,7 +32,7 @@ public class Console {
 
     private Vector2 startingPosition;
     int direction;
-    int linesAmount;
+    int lineSeenTime; // in milliseconds
 
     boolean isRendering;
 
@@ -66,16 +66,16 @@ public class Console {
 
         this.startingPosition = new Vector2();
         this.direction = 0;
-        this.linesAmount = 0;
+        this.lineSeenTime = 0;
 
         this.isRendering = true;
     }
 
     /** CREATING AND SETTING */
 
-    public static Console addInstance (String name, Vector2 startingPosition, int direction, int linesAmount) {
+    public static Console addInstance (String name, Vector2 startingPosition, int direction, int lineSeenTime) {
         Console console = new Console();
-        console.setUp(name, startingPosition, direction, linesAmount);
+        console.setUp(name, startingPosition, direction, lineSeenTime);
         console.setIsRendering(true);
 
         list.add(console);
@@ -83,11 +83,11 @@ public class Console {
         return console;
     }
 
-    private void setUp(String name, Vector2 startingPosition, int direction, int linesAmount) {
+    private void setUp(String name, Vector2 startingPosition, int direction, int lineSeenTime) {
         this.name = name;
         this.startingPosition = startingPosition.cpy();
         this.direction = direction;
-        this.linesAmount = linesAmount;
+        this.lineSeenTime = lineSeenTime;
     }
 
     /** UPDATING */
@@ -127,7 +127,7 @@ public class Console {
                 removeLine(0);
                 this.cancel();
             }
-        }, 3000);
+        }, this.lineSeenTime);
 
         this.lineTimer.purge();
 

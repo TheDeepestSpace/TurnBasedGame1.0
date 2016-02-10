@@ -2,6 +2,7 @@ package com.turnbasedgame.game.Screens.MainScreen;
 
 import com.turnbasedgame.game.Screens.Screen;
 import com.turnbasedgame.game.TurnBasedGame;
+import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Rendering.Renderer;
 
 /**
@@ -26,7 +27,8 @@ public class MainScreen extends Screen{
     @Override
     public void show() {
         super.show();
-        this.informSet();
+
+        UI.setUp();
     }
 
     /** UPDATING */
@@ -64,29 +66,30 @@ public class MainScreen extends Screen{
 
     @Override
     public void hide() {
-
+        super.hide();
     }
 
     /** DISPOSING */
 
     @Override
     public void dispose() {
-
+        super.dispose();
     }
 
     /** INFORMING */
 
     @Override
     public void informSet() {
+        Console.addLine("main", "Game was relocated to Main Screen", Console.LineType.REGULAR);
     }
 
     @Override
     public void informHid() {
-
+        Console.addLine("main", "User left Main Screen", Console.LineType.REGULAR);
     }
 
     @Override
     public void informDisposed() {
-
+        Console.addLine("main", "Main Screen was successfully disposed", Console.LineType.SUCCESS);
     }
 }

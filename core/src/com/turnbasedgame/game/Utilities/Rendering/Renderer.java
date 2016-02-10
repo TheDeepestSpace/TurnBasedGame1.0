@@ -30,8 +30,8 @@ public class Renderer {
 
     public static void renderTextLine(String text, Vector2 position, Color textColor){
         Global.spriteBatch.begin();
-        Global.font.setColor(textColor);
-        Global.font.draw(Global.spriteBatch, text, position.x, position.y);
+        Global.defaultFont.setColor(textColor);
+        Global.defaultFont.draw(Global.spriteBatch, text, position.x, position.y);
         Global.spriteBatch.end();
     }
 

@@ -85,6 +85,6 @@ public class TurnBasedGame extends Game {
 	}
 
 	public void informGameDisposed() {
-
+		Console.addLine("main", "GAME SUCCESSFULLY DISPOSED AND FINISHED!", Console.LineType.SUCCESS);
 	}
 }

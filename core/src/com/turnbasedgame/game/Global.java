@@ -16,7 +16,7 @@ import com.turnbasedgame.game.Utilities.Console;
  */
 public class Global {
     public static Preferences preferences;
-    public static BitmapFont font;
+    public static BitmapFont defaultFont;
     public static SpriteBatch spriteBatch;
     public static Stage stage;
 
@@ -24,7 +24,7 @@ public class Global {
 
     public static void initialise() {
         preferences = Gdx.app.getPreferences("GAME_PREFERENCES");
-        font = new BitmapFont(Gdx.files.internal("UI/FONTS/font16.fnt"));
+        defaultFont = new BitmapFont(Gdx.files.internal("UI/FONTS/font16.fnt"));
         spriteBatch = new SpriteBatch();
         spriteBatch.enableBlending();
         stage = new Stage();
@@ -39,7 +39,7 @@ public class Global {
 
     public static void create() {
         GlobalUI.create();
-        Console.addInstance("main", new Vector2(20, 20), 0, 15);
+        Console.addInstance("main", new Vector2(20, 20), 0, 2500);
     }
 
     /** UPDATING */

@@ -7,7 +7,7 @@ import com.turnbasedgame.game.TurnBasedGame;
  * Project: TurnBasedGame1.0
  */
 public class Screen implements ScreenExtended{
-    TurnBasedGame game;
+    public TurnBasedGame game;
 
     public Screen(TurnBasedGame game) {
         this.game = game;
@@ -21,6 +21,7 @@ public class Screen implements ScreenExtended{
     @Override
     public void show() {
         this.initialise();
+        this.informSet();
     }
 
     @Override
@@ -50,12 +51,13 @@ public class Screen implements ScreenExtended{
 
     @Override
     public void hide() {
-
+        this.dispose();
+        this.informHid();
     }
 
     @Override
     public void dispose() {
-
+        this.informDisposed();
     }
 
     @Override
