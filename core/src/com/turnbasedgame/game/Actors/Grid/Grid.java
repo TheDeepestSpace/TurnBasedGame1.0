@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.turnbasedgame.game.TurnBasedGame;
+import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Rendering.Renderer;
 import com.turnbasedgame.game.Utilities.RewrittenClasses.ModelInstance;
 import com.turnbasedgame.game.Utilities.Scanning;
@@ -71,25 +72,30 @@ public class Grid {
 
     /** CREATING AND SETTING */
 
-    public static Grid addInstance(String name, Vector3 size) {
-        Grid grid = new Grid();
-        grid.setUp(name, size);
+    public static Grid addInstance(String name) {
+        Grid grid = new Grid(name);
         list.add(grid);
-
         return grid;
     }
 
-    private Grid() {
-        this.initialise();
+    public static void setUpInstance(String name, Vector3 size, String gridLayout, boolean isLayoutLocal) {
+        getGrid(name).setUp(size, gridLayout, isLayoutLocal);
     }
 
-    private void setUp(String name, Vector3 size) {
+    private Grid(String name) {
+        this.initialise();
         this.name = name;
+    }
+
+    private void setUp(Vector3 size, String gridLayout, boolean isLayoutLocal) {
         this.size.x = size.x;
         this.size.y = size.y;
         this.size.z = size.z;
 
         this.createNodes();
+        this.setUpNodes(gridLayout, isLayoutLocal);
+
+        this.informCreated();
     }
 
     void createNodes() {
@@ -544,4 +550,11 @@ public class Grid {
     private void resetNodes() {
         this.setGridNodeBlock(new Vector3(0, 0, 0), this.size, GridNodeType.BLOCK);
     }
+
+    /** INFORMING */
+
+    void informCreated() {
+        Console.addLine("gameConsole", "Playing grid was successfully created!", Console.LineType.SUCCESS);
+    }
+
 }
