@@ -1,0 +1,50 @@
+
+atlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+checkBoxStateOff
+  rotate: false
+  xy: 1, 22
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+checkBoxStateOn
+  rotate: false
+  xy: 67, 22
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+windowBackground
+  rotate: false
+  xy: 133, 22
+  size: 64, 64
+  split: 12, 12, 24, 8
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+buttonStateDown
+  rotate: false
+  xy: 1, 4
+  size: 16, 16
+  split: 5, 5, 5, 5
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttonStateUp
+  rotate: false
+  xy: 199, 70
+  size: 16, 16
+  split: 5, 5, 5, 5
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+selection
+  rotate: false
+  xy: 1, 1
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
