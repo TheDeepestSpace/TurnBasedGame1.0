@@ -29,6 +29,7 @@ public class Actors {
                 "default",
                 true
         );
+        Camera.setLinkedGrid("gameGrid");
         informCreated();
     }
 
@@ -41,6 +42,7 @@ public class Actors {
 
     public static void render() {
         Camera.renderCenter();
+        Grid.renderInstances();
     }
 
     /** DISPOSING */

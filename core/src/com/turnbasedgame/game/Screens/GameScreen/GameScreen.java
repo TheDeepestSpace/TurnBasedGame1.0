@@ -1,6 +1,7 @@
 package com.turnbasedgame.game.Screens.GameScreen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.turnbasedgame.game.Actors.Actors;
+import com.turnbasedgame.game.Actors.Camera;
+import com.turnbasedgame.game.Global;
 import com.turnbasedgame.game.Screens.Screen;
 import com.turnbasedgame.game.TurnBasedGame;
 import com.turnbasedgame.game.Utilities.Console;
@@ -24,6 +27,9 @@ import com.turnbasedgame.game.Utilities.RewrittenClasses.DefaultShaderProvider;
  * Project: TurnBasedGame1.0
  */
 public class GameScreen extends Screen {
+
+    /* INPUT */
+    public InputMultiplexer inputMultiplexer;
 
     /* LOADING MODELS */
 
@@ -50,6 +56,9 @@ public class GameScreen extends Screen {
 
     @Override
     public void initialise() {
+        // INPUT
+
+        this.inputMultiplexer = new InputMultiplexer();
 
         // LOADING MODELS
 
@@ -66,7 +75,7 @@ public class GameScreen extends Screen {
         ShaderProvider shaderProvider = new DefaultShaderProvider(config);
 
         this.environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.0f, 0.0f, 0.0f, 1f));
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1f));
 
         this.modelBatch = new ModelBatch(shaderProvider);
         shapeRenderer = new ShapeRenderer();
@@ -93,6 +102,16 @@ public class GameScreen extends Screen {
 
         UI.setUp();
         Actors.create();
+
+        this.manageInputProcessors();
+    }
+
+    void manageInputProcessors() {
+        this.inputMultiplexer.addProcessor(Global.stage);
+        this.inputMultiplexer.addProcessor(new GameScreenInputProcessor());
+        this.inputMultiplexer.addProcessor(Camera.cameraInputController);
+
+        Gdx.input.setInputProcessor(this.inputMultiplexer);
     }
 
     /** UPDATING */
