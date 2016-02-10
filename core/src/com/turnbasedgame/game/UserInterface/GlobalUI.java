@@ -46,9 +46,9 @@ public class GlobalUI {
         globalTable.setBounds(0, Gdx.graphics.getHeight() - 300, Gdx.graphics.getWidth(), 300);
         Global.stage.addActor(globalTable);
 
-        globalTable.add(Log.addInstance("GLOBAL_GDX_JAVA_HEAP", new Vector2(20, Gdx.graphics.getHeight() - 50), "font64", Color.GREEN));
+        globalTable.add(Log.addInstance("GLOBAL_GDX_JAVA_HEAP", "n/a", "font64", Color.GREEN));
         globalTable.add().growX().row();
-        globalTable.add(Log.addInstance("GLOBAL_FPS", new Vector2(20, Gdx.graphics.getHeight() - 100), "font64", Color.GREEN)).left();
+        globalTable.add(Log.addInstance("GLOBAL_FPS", "n/a", "font64", Color.GREEN)).left();
 
     }
 

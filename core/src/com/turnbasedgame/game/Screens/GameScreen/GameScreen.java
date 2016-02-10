@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.UBJsonReader;
+import com.turnbasedgame.game.Actors.Actors;
 import com.turnbasedgame.game.Screens.Screen;
 import com.turnbasedgame.game.TurnBasedGame;
 import com.turnbasedgame.game.Utilities.Console;
@@ -78,6 +79,10 @@ public class GameScreen extends Screen {
                 1,
                 3250
         );
+
+        // ACTORS
+
+        Actors.initialise();
     }
 
     /** CREATING AND SETTING UP */
@@ -87,13 +92,14 @@ public class GameScreen extends Screen {
         super.show();
 
         UI.setUp();
+        Actors.create();
     }
 
     /** UPDATING */
 
     @Override
     public void update() {
-
+        Actors.update();
     }
 
     /** RENDERING */
@@ -102,6 +108,8 @@ public class GameScreen extends Screen {
     public void render(float delta) {
         super.render(delta);
         Renderer.clearScreen();
+
+        Actors.render();
     }
 
     /** INTERACTING */
@@ -130,6 +138,7 @@ public class GameScreen extends Screen {
 
     @Override
     public void dispose() {
+        Actors.dispose();
         super.dispose();
     }
 

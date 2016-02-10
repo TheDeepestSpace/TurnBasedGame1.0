@@ -20,8 +20,8 @@ public class Screen implements ScreenExtended{
 
     @Override
     public void show() {
-        this.initialise();
         this.informSet();
+        this.initialise();
     }
 
     @Override

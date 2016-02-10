@@ -39,7 +39,7 @@ public class Global {
 
     public static void create() {
         GlobalUI.create();
-        Console.addInstance("main", new Vector2(20, 20), 0, 2500);
+        Console.addInstance("main", new Vector2(20, 20), 0, 10000);
     }
 
     /** UPDATING */
