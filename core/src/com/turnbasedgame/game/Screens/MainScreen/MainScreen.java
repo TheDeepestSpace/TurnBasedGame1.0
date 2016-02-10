@@ -1,13 +1,13 @@
 package com.turnbasedgame.game.Screens.MainScreen;
 
 import com.turnbasedgame.game.Screens.Screen;
-import com.turnbasedgame.game.Screens.ScreenExtended;
 import com.turnbasedgame.game.TurnBasedGame;
 
 /**
  * Created by Boris on 09.02.2016.
+ * Project: TurnBasedGame1.0
  */
-public class MainScreen extends Screen implements ScreenExtended{
+public class MainScreen extends Screen{
 
     /** INITIALISING */
 
@@ -15,20 +15,31 @@ public class MainScreen extends Screen implements ScreenExtended{
         super(game);
     }
 
+    @Override
+    public void initialise() {
+
+    }
+
     /** CREATING AND SETTING UP */
 
     @Override
     public void show() {
-
+        super.show();
+        this.informSet();
     }
 
     /** UPDATING */
+
+    @Override
+    public void update() {
+
+    }
 
     /** RENDERING */
 
     @Override
     public void render(float delta) {
-
+        super.render(delta);
     }
 
     /** INTERACTING */

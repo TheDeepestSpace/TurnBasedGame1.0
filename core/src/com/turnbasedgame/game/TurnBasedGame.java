@@ -11,19 +11,41 @@ public class TurnBasedGame extends Game {
 	public static MainScreen mainScreen;
 	public static GameScreen gameScreen;
 
+	public static String currentScreen;
+
 	// GAME SCREENS
 
 	/** INITIALISING */
 
 	public void initialise() {
+		this.initialiseScreens();
 		informGameInitialised();
+	}
+
+	void initialiseScreens() {
+		mainScreen = new MainScreen(this);
+		gameScreen = new GameScreen(this);
 	}
 
 	/** CREATING AND SETTING UP */
 
+	public void setMainScreen() {
+		setScreen(mainScreen);
+		currentScreen = "mainScreen";
+		System.gc();
+	}
+
+	public void setGameScreen() {
+		setScreen(gameScreen);
+		currentScreen = "gameScreen";
+		System.gc();
+	}
+
 	@Override
 	public void create () {
+		this.initialiseScreens();
 
+		this.setMainScreen();
 	}
 
 	/** UPDATING */
@@ -36,7 +58,7 @@ public class TurnBasedGame extends Game {
 
 	@Override
 	public void render () {
-		update();
+		this.update();
 
 		super.render();
 	}
@@ -46,7 +68,7 @@ public class TurnBasedGame extends Game {
 	@Override
 	public void dispose() {
 		super.dispose();
-		informGameDisposed();
+		this.informGameDisposed();
 	}
 
 	/** INFORMING */
