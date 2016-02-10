@@ -2,6 +2,7 @@ package com.turnbasedgame.game.Screens.MainScreen;
 
 import com.turnbasedgame.game.Screens.Screen;
 import com.turnbasedgame.game.TurnBasedGame;
+import com.turnbasedgame.game.Utilities.Rendering.Renderer;
 
 /**
  * Created by Boris on 09.02.2016.
@@ -40,6 +41,8 @@ public class MainScreen extends Screen{
     @Override
     public void render(float delta) {
         super.render(delta);
+
+        Renderer.clearScreen();
     }
 
     /** INTERACTING */
@@ -75,7 +78,6 @@ public class MainScreen extends Screen{
 
     @Override
     public void informSet() {
-
     }
 
     @Override

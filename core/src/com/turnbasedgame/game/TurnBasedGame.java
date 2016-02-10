@@ -3,6 +3,7 @@ package com.turnbasedgame.game;
 import com.badlogic.gdx.Game;
 import com.turnbasedgame.game.Screens.GameScreen.GameScreen;
 import com.turnbasedgame.game.Screens.MainScreen.MainScreen;
+import com.turnbasedgame.game.Utilities.Console;
 
 public class TurnBasedGame extends Game {
 
@@ -18,8 +19,8 @@ public class TurnBasedGame extends Game {
 	/** INITIALISING */
 
 	public void initialise() {
+		Global.initialise();
 		this.initialiseScreens();
-		informGameInitialised();
 	}
 
 	void initialiseScreens() {
@@ -43,7 +44,11 @@ public class TurnBasedGame extends Game {
 
 	@Override
 	public void create () {
-		this.initialiseScreens();
+		this.initialise();
+
+		Global.create();
+
+		this.informGameStarted();
 
 		this.setMainScreen();
 	}
@@ -51,7 +56,7 @@ public class TurnBasedGame extends Game {
 	/** UPDATING */
 
 	public void update() {
-
+		Global.update();
 	}
 
 	/** RENDERING */
@@ -61,6 +66,7 @@ public class TurnBasedGame extends Game {
 		this.update();
 
 		super.render();
+		Global.render();
 	}
 
 	/** DISPOSING */
@@ -69,12 +75,13 @@ public class TurnBasedGame extends Game {
 	public void dispose() {
 		super.dispose();
 		this.informGameDisposed();
+		Global.dispose();
 	}
 
 	/** INFORMING */
 
-	public void informGameInitialised() {
-
+	public void informGameStarted() {
+		Console.addLine("main", "GAME SUCCESSFULLY INITIALISED AND STARTED!", Console.LineType.SUCCESS);
 	}
 
 	public void informGameDisposed() {
