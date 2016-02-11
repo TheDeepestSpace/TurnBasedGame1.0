@@ -47,7 +47,7 @@ public class GridNode {
     }
 
     void setUpBounds() {
-        this.sceneCoordinates = Geometry.getSceneCoordinates(this.gridCoordinates, "gameGrid");
+        this.sceneCoordinates = Geometry.getSceneCoordinates(this.gridCoordinates);
 
         this.bounds = new BoundingBox();
         this.bounds.set(

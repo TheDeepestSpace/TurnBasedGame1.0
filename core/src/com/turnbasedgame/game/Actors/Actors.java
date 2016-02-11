@@ -14,7 +14,7 @@ public class Actors {
 
     public static void initialise() {
         Camera.initialise();
-        Grid.initialiseClass();
+        Grid.initialise();
         Entity.initialiseClass();
         informInitialised();
     }
@@ -24,13 +24,7 @@ public class Actors {
     public static void create() {
         Camera.create();
 
-        Grid.addInstance("gameGrid");
-        Grid.setUpInstance(
-                "gameGrid",
-                new Vector3(20, 10, 20),
-                "default",
-                true
-        );
+        Grid.setUp();
         Camera.setLinkedGrid("gameGrid");
         informCreated();
     }
@@ -45,7 +39,7 @@ public class Actors {
 
     public static void render() {
         Camera.renderCenter();
-        Grid.renderInstances();
+        Grid.render();
         Entity.renderInstances();
     }
 
@@ -53,7 +47,7 @@ public class Actors {
 
     public static void dispose() {
         Camera.dispose();
-        Grid.disposeClass();
+        Grid.dispose();
         Entity.disposeClass();
         informDisposed();
     }

@@ -20,7 +20,6 @@ import java.util.Scanner;
  * Project: TurnBasedGame1.0
  */
 public class Grid {
-    public static ArrayList<Grid> list;
 
     public static final int tileSize = 1;
     public static final int tileSceneSize = 1;
@@ -28,136 +27,113 @@ public class Grid {
     public static final int pathFound = 1;
     public static final int pathNotFound = 2;
 
-    public ArrayList<ArrayList<ArrayList<GridNode>>> nodes;
-    public Array<GridNode> openedList;
-    public Array<GridNode> closedList;
-    public Array<GridNode> finalPath;
+    public static ArrayList<ArrayList<ArrayList<GridNode>>> nodes;
+    public static Array<GridNode> openedList;
+    public static Array<GridNode> closedList;
+    public static Array<GridNode> finalPath;
 
-    private Vector3 start, end;
+    private static Vector3 start, end;
 
-    String name;
-    public Vector3 size;
+    static String name;
+    public static Vector3 size;
 
-    File gridLayout;
-    Scanner fileScanner;
-    String gridLayoutName;
+    static File gridLayout;
+    static Scanner fileScanner;
+    static String gridLayoutName;
+    static boolean gridLayoutLocal;
 
     /* VISUALISING */
 
-    Model gridModel;
-    ModelInstance gridModelInstance;
+    static Model gridModel;
+    static ModelInstance gridModelInstance;
 
     /** INITIALISING */
 
-    public static void initialiseClass() {
-        list = new ArrayList<Grid>();
-    }
+    public static void initialise() {
+        nodes = new ArrayList<ArrayList<ArrayList<GridNode>>>();
+        openedList = new Array<GridNode>();
+        closedList = new Array<GridNode>();
+        finalPath = new Array<GridNode>();
 
-    private void initialise() {
-        this.nodes = new ArrayList<ArrayList<ArrayList<GridNode>>>();
-        this.openedList = new Array<GridNode>();
-        this.closedList = new Array<GridNode>();
-        this.finalPath = new Array<GridNode>();
+        start = new Vector3(-1, -1, -1);
+        end = new Vector3(-1, -1, -1);
 
-        this.start = new Vector3();
-        this.end = new Vector3();
+        name = "gameGrid";
+        size = new Vector3(20, 10, 20);
 
-        this.name = "n/a";
-        this.size = new Vector3(0, 0, 0);
+        gridLayoutName = "default";
+        gridLayoutLocal = true;
 
-        this.gridLayoutName = "n/a";
-
-        this.gridModel = new Model();
+        gridModel = new Model();
     }
 
     /** CREATING AND SETTING */
 
-    public static Grid addInstance(String name) {
-        Grid grid = new Grid(name);
-        list.add(grid);
-        return grid;
+    public static void setUp() {
+        createNodes();
+        setUpNodes();
+
+        informCreated();
     }
 
-    public static void setUpInstance(String name, Vector3 size, String gridLayout, boolean isLayoutLocal) {
-        getGrid(name).setUp(size, gridLayout, isLayoutLocal);
-    }
-
-    private Grid(String name) {
-        this.initialise();
-        this.name = name;
-    }
-
-    private void setUp(Vector3 size, String gridLayout, boolean isLayoutLocal) {
-        this.size.x = size.x;
-        this.size.y = size.y;
-        this.size.z = size.z;
-
-        this.createNodes();
-        this.setUpNodes(gridLayout, isLayoutLocal);
-
-        this.informCreated();
-    }
-
-    void createNodes() {
+    static void createNodes() {
         Vector3 nodePos = new Vector3();
 
-        for (int x = 0; x < this.size.x; x++) {
-            this.nodes.add(new ArrayList<ArrayList<GridNode>>());
+        for (int x = 0; x < size.x; x++) {
+            nodes.add(new ArrayList<ArrayList<GridNode>>());
             nodePos.x = x;
-            for (int y = 0; y < this.size.y; y++) {
-                this.nodes.get(x).add(new ArrayList<GridNode>());
+            for (int y = 0; y < size.y; y++) {
+                nodes.get(x).add(new ArrayList<GridNode>());
                 nodePos.y = y;
-                for (int z = 0; z < this.size.z; z++) {
+                for (int z = 0; z < size.z; z++) {
                     nodePos.z = z;
-                    this.nodes.get(x).get(y).add(new GridNode(this.name, nodePos));
+                    nodes.get(x).get(y).add(new GridNode(name, nodePos));
                 }
             }
         }
     }
 
-    public void setUpNodes(String gridLayout, boolean isLocal) {
+    static void setUpNodes() {
 
-        for (int x = 0; x < this.size.x; x++) {
-            for (int y = 0; y < this.size.y; y++) {
-                for (int z = 0; z < this.size.z; z++) {
-                    this.getNode(x, y, z).setUpBounds();
+        for (int x = 0; x < size.x; x++) {
+            for (int y = 0; y < size.y; y++) {
+                for (int z = 0; z < size.z; z++) {
+                    getNode(x, y, z).setUpBounds();
                 }
             }
         }
 
-        if (isLocal) {
-            this.gridLayout = new File("ACTORS/GRID/LAYOUTS/" + gridLayout + ".txt");
+        if (gridLayoutLocal) {
+            gridLayout = new File("ACTORS/GRID/LAYOUTS/" + gridLayoutName + ".txt");
         } else {
-            this.gridLayout = new File("sdcard/" + gridLayout + ".txt");
+            gridLayout = new File("sdcard/" + gridLayoutName + ".txt");
         }
 
-        this.gridLayoutName = gridLayout;
-
-        this.setUpScanner();
-        this.resetNodes();
-        while (this.fileScanner.hasNext("BLOCK")) {
-            this.fileScanner.next("BLOCK");
-            this.setGridNodeBlock(
-                    Scanning.nextVector3(this.fileScanner),
-                    Scanning.nextVector3(this.fileScanner),
-                    GridNodeType.valueOf(this.fileScanner.next())
+        setUpScanner();
+        resetNodes();
+        while (fileScanner.hasNext("BLOCK")) {
+            fileScanner.next("BLOCK");
+            setGridNodeBlock(
+                    Scanning.nextVector3(fileScanner),
+                    Scanning.nextVector3(fileScanner),
+                    GridNodeType.valueOf(fileScanner.next())
             );
         }
 
-        this.fileScanner.close();
+        fileScanner.close();
 
-        this.setUpGridModel();
+        setUpGridModel();
     }
 
-    private void setUpGridModel() {
-        this.gridModel = TurnBasedGame.gameScreen.modelLoader.loadModel(Gdx.files.internal("ACTORS/GRID/GRID_MODELS/" + this.gridLayoutName + ".g3db"));
-        this.gridModelInstance = new ModelInstance(this.gridModel);
-        this.gridModelInstance.transform.scale(0.1f, 0.1f, 0.1f);
+    static void setUpGridModel() {
+        gridModel = TurnBasedGame.gameScreen.modelLoader.loadModel(Gdx.files.internal("ACTORS/GRID/GRID_MODELS/" + gridLayoutName + ".g3db"));
+        gridModelInstance = new ModelInstance(gridModel);
+        gridModelInstance.transform.scale(0.1f, 0.1f, 0.1f);
     }
 
-    void setUpScanner() {
+    static void setUpScanner() {
         try {
-            this.fileScanner = new Scanner(this.gridLayout);
+            fileScanner = new Scanner(gridLayout);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -167,40 +143,40 @@ public class Grid {
 
     static Vector3 openListPosition = new Vector3();
 
-    public int findPath() {
-        this.openedList.clear();
-        this.closedList.clear();
-        this.finalPath.clear();
+    public static int findPath() {
+        openedList.clear();
+        closedList.clear();
+        finalPath.clear();
 
-        this.resetNodesValues();
+        resetNodesValues();
 
-        if (this.start.x == -1 || this.start.y == -1 || this.start.z == -1
-                ||this.end.x == -1 || this.end.y == -1 || this.end.z == -1) {
+        if (start.x == -1 || start.y == -1 || start.z == -1
+                || end.x == -1 || end.y == -1 || end.z == -1) {
             return pathNotFound;
-        } else if (this.start.x == this.end.x
-                &&this.start.y == this.end.y
-                &&this.start.z == this.end.z) {
+        } else if (start.x == end.x
+                && start.y == end.y
+                && start.z == end.z) {
             return pathFound;
         } else {
-            this.openedList.add(
-                    this.getStartNode()
+            openedList.add(
+                    getStartNode()
             );
 
-            this.setOpenList(this.start);
+            setOpenList(start);
 
-            this.closedList.add(this.openedList.first());
-            this.openedList.removeIndex(0);
+            closedList.add(openedList.first());
+            openedList.removeIndex(0);
 
-            while (this.closedList.peek() != this.getEndNode()) {
-                if (this.openedList.size != 0) {
-                    int bestFIndex = this.getBestFIndex();
+            while (closedList.peek() != getEndNode()) {
+                if (openedList.size != 0) {
+                    int bestFIndex = getBestFIndex();
                     if (bestFIndex != -1) {
-                        this.closedList.add(this.openedList.get(bestFIndex));
-                        this.openedList.removeIndex(bestFIndex);
+                        closedList.add(openedList.get(bestFIndex));
+                        openedList.removeIndex(bestFIndex);
 
-                        openListPosition = this.closedList.peek().gridCoordinates;
+                        openListPosition = closedList.peek().gridCoordinates;
 
-                        this.setOpenList(openListPosition);
+                        setOpenList(openListPosition);
                     }else {
                         return pathNotFound;
                     }
@@ -210,172 +186,172 @@ public class Grid {
             }
         }
 
-        GridNode g = this.closedList.peek();
-        this.finalPath.add(g);
+        GridNode g = closedList.peek();
+        finalPath.add(g);
 
 
-        while (g != this.getStartNode()) {
+        while (g != getStartNode()) {
             g = g.parent;
-            this.finalPath.add(g);
+            finalPath.add(g);
         }
 
-        this.finalPath.reverse();
+        finalPath.reverse();
 
         return pathFound;
     }
 
-    private void setOpenList(Vector3 gridCoordinates) {
+    static void setOpenList(Vector3 gridCoordinates) {
         boolean ignoreLeft = (gridCoordinates.x - 1) < 0;
-        boolean ignoreRight = (gridCoordinates.x + 1) >= this.size.x;
+        boolean ignoreRight = (gridCoordinates.x + 1) >= size.x;
         boolean ignoreDown = (gridCoordinates.y - 1) < 0;
-        boolean ignoreUp = (gridCoordinates.y + 1) >= this.size.y;
+        boolean ignoreUp = (gridCoordinates.y + 1) >= size.y;
         boolean ignoreBack = (gridCoordinates.z - 1) < 0;
-        boolean ignoreFront = (gridCoordinates.z + 1) >= this.size.z;
+        boolean ignoreFront = (gridCoordinates.z + 1) >= size.z;
 
         if (!ignoreLeft && !ignoreDown && !ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y - 1, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y - 1, gridCoordinates.z - 1));
         }
 
         if (!ignoreLeft && !ignoreDown) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y - 1, gridCoordinates.z));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y - 1, gridCoordinates.z));
         }
 
         if (!ignoreLeft && !ignoreDown && !ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y - 1, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y - 1, gridCoordinates.z + 1));
         }
 
         if (!ignoreDown && !ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x, gridCoordinates.y - 1, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x, gridCoordinates.y - 1, gridCoordinates.z - 1));
         }
 
         if (!ignoreDown) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x, gridCoordinates.y - 1, gridCoordinates.z));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x, gridCoordinates.y - 1, gridCoordinates.z));
         }
 
         if (!ignoreDown && !ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x, gridCoordinates.y - 1, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x, gridCoordinates.y - 1, gridCoordinates.z + 1));
         }
 
         if (!ignoreRight && !ignoreDown && !ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y - 1, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y - 1, gridCoordinates.z - 1));
         }
 
         if (!ignoreRight && !ignoreDown) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y - 1, gridCoordinates.z));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y - 1, gridCoordinates.z));
         }
 
         if (!ignoreRight && !ignoreDown && !ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y - 1, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y - 1, gridCoordinates.z + 1));
         }
 
         if (!ignoreLeft && !ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y, gridCoordinates.z - 1));
         }
 
         if (!ignoreLeft) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y, gridCoordinates.z));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y, gridCoordinates.z));
         }
 
         if (!ignoreLeft && !ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y, gridCoordinates.z + 1));
         }
 
         if (!ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x, gridCoordinates.y, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x, gridCoordinates.y, gridCoordinates.z - 1));
         }
 
         if (!ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x, gridCoordinates.y, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x, gridCoordinates.y, gridCoordinates.z + 1));
         }
 
         if (!ignoreRight && !ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y, gridCoordinates.z - 1));
         }
 
         if (!ignoreRight) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y, gridCoordinates.z));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y, gridCoordinates.z));
         }
 
         if (!ignoreRight && !ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y, gridCoordinates.z + 1));
         }
 
         if (!ignoreLeft && !ignoreUp && !ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y + 1, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y + 1, gridCoordinates.z - 1));
         }
 
         if (!ignoreLeft && !ignoreUp) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y + 1, gridCoordinates.z));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y + 1, gridCoordinates.z));
         }
 
         if (!ignoreLeft && !ignoreUp && !ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x - 1, gridCoordinates.y + 1, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x - 1, gridCoordinates.y + 1, gridCoordinates.z + 1));
         }
 
         if (!ignoreUp && !ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x, gridCoordinates.y + 1, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x, gridCoordinates.y + 1, gridCoordinates.z - 1));
         }
 
         if (!ignoreUp) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x, gridCoordinates.y + 1, gridCoordinates.z));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x, gridCoordinates.y + 1, gridCoordinates.z));
         }
 
         if (!ignoreUp && !ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x, gridCoordinates.y + 1, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x, gridCoordinates.y + 1, gridCoordinates.z + 1));
         }
 
         if (!ignoreRight && !ignoreUp && !ignoreBack) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y + 1, gridCoordinates.z - 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y + 1, gridCoordinates.z - 1));
         }
 
         if (!ignoreRight && !ignoreUp) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y +1, gridCoordinates.z));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y +1, gridCoordinates.z));
         }
 
         if (!ignoreRight && !ignoreUp && !ignoreFront) {
-            lookNode(this.getNode(gridCoordinates),
-                    this.getNode(gridCoordinates.x + 1, gridCoordinates.y + 1, gridCoordinates.z + 1));
+            lookNode(getNode(gridCoordinates),
+                    getNode(gridCoordinates.x + 1, gridCoordinates.y + 1, gridCoordinates.z + 1));
         }
     }
 
-    private void lookNode(GridNode parentNode, GridNode currentNode) {
+    static void lookNode(GridNode parentNode, GridNode currentNode) {
         if (currentNode.type != GridNodeType.BLOCK &&
-                !(this.closedList.contains(currentNode, true) || this.closedList.contains(currentNode, false))) {
-            if (!(this.openedList.contains(currentNode, true) || this.closedList.contains(currentNode, false))) {
-                currentNode.calculateValues(parentNode, this.getEndNode());
-                this.openedList.add(currentNode);
+                !(closedList.contains(currentNode, true) || closedList.contains(currentNode, false))) {
+            if (!(openedList.contains(currentNode, true) || closedList.contains(currentNode, false))) {
+                currentNode.calculateValues(parentNode, getEndNode());
+                openedList.add(currentNode);
             } else {
                 compareParentWithOpen(parentNode, currentNode);
             }
         }
     }
 
-    private void compareParentWithOpen(GridNode parentNode, GridNode openNode) {
+    static void compareParentWithOpen(GridNode parentNode, GridNode openNode) {
         double tempG = openNode.G;
         double xDistance = Math.abs(openNode.gridCoordinates.x - parentNode.gridCoordinates.x) / tileSize;
         double yDistance = Math.abs(openNode.gridCoordinates.y - parentNode.gridCoordinates.y) / tileSize;
@@ -392,42 +368,42 @@ public class Grid {
         }
 
         if (tempG < parentNode.G) {
-            openNode.calculateValues(parentNode, this.getEndNode());
-            this.openedList.set(this.openedList.indexOf(openNode, true), openNode);
+            openNode.calculateValues(parentNode, getEndNode());
+            openedList.set(openedList.indexOf(openNode, true), openNode);
         }
 
     }
 
-    public void setGridNodeBlock(Vector3 position, Vector3 size, GridNodeType type) {
+    public static void setGridNodeBlock(Vector3 position, Vector3 size, GridNodeType type) {
         for (int x = (int) position.x; x < (int) position.x + (int) size.x; x++) {
             for (int y = (int)position.y; y < (int)position.y + (int)size.y; y++) {
                 for (int z = (int)position.z; z < (int)position.z + (int)size.z; z++) {
-                    this.setGridNode(new Vector3(x, y, z), type);
+                    setGridNode(new Vector3(x, y, z), type);
                 }
             }
         }
     }
 
-    public void setGridNode(Vector3 position, GridNodeType type) {
-        if (position.x >= 0 && position.x < this.size.x) {
-            if (position.y >= 0 && position.y < this.size.y) {
-                if (position.z >= 0 && position.z < this.size.z) {
+    public static void setGridNode(Vector3 position, GridNodeType type) {
+        if (position.x >= 0 && position.x < size.x) {
+            if (position.y >= 0 && position.y < size.y) {
+                if (position.z >= 0 && position.z < size.z) {
                     if (type == GridNodeType.START || type == GridNodeType.END) {
-                        for (int x = 0; x < this.size.x; x++) {
-                            for (int y = 0; y < this.size.y; y++) {
-                                for (int z = 0; z < this.size.z; z++) {
-                                    if (this.getNode(x, y, z).type == type) {
+                        for (int x = 0; x < size.x; x++) {
+                            for (int y = 0; y < size.y; y++) {
+                                for (int z = 0; z < size.z; z++) {
+                                    if (getNode(x, y, z).type == type) {
                                         if (type == GridNodeType.START) {
-                                            this.start.x = -1;
-                                            this.start.y = -1;
-                                            this.start.z = -1;
+                                            start.x = -1;
+                                            start.y = -1;
+                                            start.z = -1;
                                         } else {
-                                            this.end.x = -1;
-                                            this.end.y = -1;
-                                            this.end.z = -1;
+                                            end.x = -1;
+                                            end.y = -1;
+                                            end.z = -1;
                                         }
 
-                                        this.getNode(x, y, z).type = GridNodeType.BLANK;
+                                        getNode(x, y, z).type = GridNodeType.BLANK;
                                     }
                                 }
                             }
@@ -438,39 +414,39 @@ public class Grid {
         }
 
         if (type == GridNodeType.START) {
-            this.start = position.cpy();
+            start = position.cpy();
         } else if (type == GridNodeType.END) {
-            this.end = position.cpy();
+            end = position.cpy();
         }
-        this.getNode(position).type = type;
-        this.getNode(position).update();
+        getNode(position).type = type;
+        getNode(position).update();
     }
 
     /** GETTERS / SETTERS */
 
-    public GridNode getNode(Vector3 gridCoordinates) {
-        return this.nodes.get((int) gridCoordinates.x).get((int) gridCoordinates.y).get((int) gridCoordinates.z);
+    public static GridNode getNode(Vector3 gridCoordinates) {
+        return nodes.get((int) gridCoordinates.x).get((int) gridCoordinates.y).get((int) gridCoordinates.z);
     }
 
-    public GridNode getNode(float gridCoordinatesX, float gridCoordinatesY, float gridCoordinatesZ) {
-        return this.nodes.get((int) gridCoordinatesX).get((int) gridCoordinatesY).get((int) gridCoordinatesZ);
+    public static GridNode getNode(float gridCoordinatesX, float gridCoordinatesY, float gridCoordinatesZ) {
+        return nodes.get((int) gridCoordinatesX).get((int) gridCoordinatesY).get((int) gridCoordinatesZ);
     }
 
-    public GridNode getStartNode() {
-        return this.nodes.get((int) start.x).get((int) start.y).get((int) start.z);
+    public static GridNode getStartNode() {
+        return nodes.get((int) start.x).get((int) start.y).get((int) start.z);
     }
 
-    public GridNode getEndNode() {
-        return this.nodes.get((int) end.x).get((int) end.y).get((int) end.z);
+    public static GridNode getEndNode() {
+        return nodes.get((int) end.x).get((int) end.y).get((int) end.z);
     }
 
-    private int getBestFIndex () {
+    static int getBestFIndex () {
         double bestF = Float.MAX_VALUE;
         int index = -1;
 
-        for (int i = 0; i < this.openedList.size; i++) {
-            if (bestF > this.openedList.get(i).F) {
-                bestF = this.openedList.get(i).F;
+        for (int i = 0; i < openedList.size; i++) {
+            if (bestF > openedList.get(i).F) {
+                bestF = openedList.get(i).F;
                 index = i;
             }
         }
@@ -478,82 +454,54 @@ public class Grid {
         return index;
     }
 
-    public static Grid getGrid(String name) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).name.equals(name)) return list.get(i);
-        }
-
-        return null;
-    }
-
     /** RENDERING */
 
-    public static void renderInstances() {
-        for (int i = 0; i < list.size(); i++) {
-            list.get(i).render();
-        }
+    public static void render() {
+        Renderer.renderModelInstance(gridModelInstance);
     }
 
-    public static void renderInstancesShadows() {
-        for (int i = 0; i < list.size(); i++) {
-            list.get(i).renderShadow();
-        }
-    }
-
-    private void render() {
-        Renderer.renderModelInstance(this.gridModelInstance);
-    }
-
-    private void renderShadow() {
-        Renderer.renderModelInstanceShadow(this.gridModelInstance);
+    static void renderShadow() {
+        Renderer.renderModelInstanceShadow(gridModelInstance);
     }
 
     /** DISPOSING / RESETTING */
 
-    public static void disposeClass() {
-        for (int i = 0, len = list.size(); i < len; i++) {
-            list.get(i).dispose();
-        }
-
-        list.clear();
+    public static void dispose() {
+        disposeNodes();
     }
 
-    private void dispose() {
-        this.disposeNodes();
-    }
-
-    private void disposeNodes() {
-        for (int x = 0; x < this.size.x; x++) {
-            for (int y = 0; y < this.size.y; y++) {
-                for (int z = 0; z < this.size.z; z++) {
-                    this.getNode(x, y, z).dispose();
+    static void disposeNodes() {
+        for (int x = 0; x < size.x; x++) {
+            for (int y = 0; y < size.y; y++) {
+                for (int z = 0; z < size.z; z++) {
+                    getNode(x, y, z).dispose();
                 }
             }
         }
 
-        this.nodes.clear();
-        this.openedList.clear();
-        this.closedList.clear();
-        this.finalPath.clear();
+        nodes.clear();
+        openedList.clear();
+        closedList.clear();
+        finalPath.clear();
     }
 
-    private void resetNodesValues() {
-        for (int x = 0; x < this.size.x; x++) {
-            for (int y = 0; y < this.size.y; y++) {
-                for (int z = 0; z < this.size.z; z++) {
-                    this.getNode(x, y, z).reset();
+    static void resetNodesValues() {
+        for (int x = 0; x < size.x; x++) {
+            for (int y = 0; y < size.y; y++) {
+                for (int z = 0; z < size.z; z++) {
+                    getNode(x, y, z).reset();
                 }
             }
         }
     }
 
-    private void resetNodes() {
-        this.setGridNodeBlock(new Vector3(0, 0, 0), this.size, GridNodeType.BLOCK);
+    static void resetNodes() {
+        setGridNodeBlock(new Vector3(0, 0, 0), size, GridNodeType.BLOCK);
     }
 
     /** INFORMING */
 
-    void informCreated() {
+    static void informCreated() {
         Console.addLine("gameConsole", "Playing grid was successfully created!", Console.LineType.SUCCESS);
     }
 

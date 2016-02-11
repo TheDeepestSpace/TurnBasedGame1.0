@@ -59,13 +59,13 @@ public class Camera {
         deltaX = deltaX * camera.zoom * 2;
         deltaY = deltaY * camera.zoom * 2;
 
-        if (camera.position.x + distance > camera.position.z + distance + Grid.getGrid(linkedGrid).size.x * Grid.tileSceneSize){
+        if (camera.position.x + distance > camera.position.z + distance + Grid.size.x * Grid.tileSceneSize){
             camera.position.x -= 1;
             camera.position.z += 1;
-        }else if (camera.position.x + distance > -(camera.position.z + distance) + Grid.getGrid(linkedGrid).size.x * Grid.tileSceneSize + Grid.getGrid(linkedGrid).size.z * Grid.tileSceneSize) {
+        }else if (camera.position.x + distance > -(camera.position.z + distance) + Grid.size.x * Grid.tileSceneSize + Grid.size.z * Grid.tileSceneSize) {
             camera.position.x -= 1;
             camera.position.z -= 1;
-        }else if (camera.position.x + distance < camera.position.z + distance - Grid.getGrid(linkedGrid).size.z * Grid.tileSceneSize) {
+        }else if (camera.position.x + distance < camera.position.z + distance - Grid.size.z * Grid.tileSceneSize) {
             camera.position.x += 1;
             camera.position.z -= 1;
         }else if (camera.position.x + distance < -(camera.position.z + distance)){
