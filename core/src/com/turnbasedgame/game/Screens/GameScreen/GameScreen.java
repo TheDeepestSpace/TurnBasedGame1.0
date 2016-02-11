@@ -29,6 +29,7 @@ import com.turnbasedgame.game.Utilities.RewrittenClasses.DefaultShaderProvider;
 public class GameScreen extends Screen {
 
     /* INPUT */
+
     public InputMultiplexer inputMultiplexer;
 
     /* LOADING MODELS */

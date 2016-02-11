@@ -49,7 +49,7 @@ public class Grid {
 
     /** INITIALISING */
 
-    public static void initialiseInstances() {
+    public static void initialiseClass() {
         list = new ArrayList<Grid>();
     }
 
@@ -510,7 +510,7 @@ public class Grid {
 
     /** DISPOSING / RESETTING */
 
-    public static void disposeInstances() {
+    public static void disposeClass() {
         for (int i = 0, len = list.size(); i < len; i++) {
             list.get(i).dispose();
         }

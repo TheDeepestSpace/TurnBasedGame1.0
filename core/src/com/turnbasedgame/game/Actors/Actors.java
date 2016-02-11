@@ -1,6 +1,7 @@
 package com.turnbasedgame.game.Actors;
 
 import com.badlogic.gdx.math.Vector3;
+import com.turnbasedgame.game.Actors.Entity.Entity;
 import com.turnbasedgame.game.Actors.Grid.Grid;
 import com.turnbasedgame.game.Utilities.Console;
 
@@ -13,7 +14,8 @@ public class Actors {
 
     public static void initialise() {
         Camera.initialise();
-        Grid.initialiseInstances();
+        Grid.initialiseClass();
+        Entity.initialiseClass();
         informInitialised();
     }
 
@@ -36,6 +38,7 @@ public class Actors {
     /** UPDATING */
 
     public static void update() {
+        Entity.updateInstances();
     }
 
     /** RENDERING */
@@ -43,12 +46,15 @@ public class Actors {
     public static void render() {
         Camera.renderCenter();
         Grid.renderInstances();
+        Entity.renderInstances();
     }
 
     /** DISPOSING */
 
     public static void dispose() {
         Camera.dispose();
+        Grid.disposeClass();
+        Entity.disposeClass();
         informDisposed();
     }
 
