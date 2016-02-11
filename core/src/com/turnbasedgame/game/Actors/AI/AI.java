@@ -26,9 +26,9 @@ public class AI {
     }
 
     void parseBehaviorTree() {
-        //Reader reader = Gdx.files.internal("AI/behavior_tree.btree").reader();
-        //BehaviorTreeParser<AI> parser = new BehaviorTreeParser<AI>(BehaviorTreeParser.DEBUG_NONE);
-        //behaviorTree = parser.parse(reader, this);
+        Reader reader = Gdx.files.internal("AI/behavior_tree.btree").reader();
+        BehaviorTreeParser<AI> parser = new BehaviorTreeParser<AI>(BehaviorTreeParser.DEBUG_NONE);
+        behaviorTree = parser.parse(reader, this);
 
         this.informBehaviorTreeParsed();
     }

@@ -1,1 +1,4 @@
+import finishTurn:"com.turnbasedgame.game.Actors.AI.Tasks.FinishTurnTask"
+
 root
+    finishTurn

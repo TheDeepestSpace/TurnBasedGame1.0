@@ -11,7 +11,7 @@ public class Game {
 
     public static void start() {
         informGameStarted();
-        aiTurn = false;
+        aiTurn = true;
 
         startTurn();
     }
