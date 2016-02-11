@@ -25,7 +25,9 @@ public class Actors {
         Camera.create();
 
         Grid.setUp();
-        Camera.setLinkedGrid("gameGrid");
+
+        Entity.addInstance(new Vector3(18, 2, 1), true);
+
         informCreated();
     }
 
@@ -38,9 +40,9 @@ public class Actors {
     /** RENDERING */
 
     public static void render() {
-        Camera.renderCenter();
         Grid.render();
         Entity.renderInstances();
+        Camera.renderCenter();
     }
 
     /** DISPOSING */

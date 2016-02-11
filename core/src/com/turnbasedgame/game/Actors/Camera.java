@@ -20,7 +20,6 @@ public class Camera {
     public static OrthographicCamera camera;
     public static CameraInputController cameraInputController;
     public static int distance;
-    public static String linkedGrid;
 
     public static Color centerColor;
 
@@ -35,7 +34,6 @@ public class Camera {
         distance = 1000;
         centerColor = Color.WHITE;
         isRenderingCenter = settings.getBoolean("IS_RENDERING_CENTER", true);
-        linkedGrid = "n/a";
     }
 
     /** CREATING AND SETTING */
@@ -95,10 +93,6 @@ public class Camera {
 
     /** GETTERS / SETTING */
 
-    public static void setLinkedGrid(String gridName) {
-        linkedGrid = gridName;
-    }
-
     /** RENDERING */
 
     public static void renderCenter() {
@@ -116,7 +110,5 @@ public class Camera {
     public static void dispose() {
         settings.putBoolean("IS_RENDERING_CENTER", isRenderingCenter);
         settings.flush();
-
-        linkedGrid = null;
     }
 }

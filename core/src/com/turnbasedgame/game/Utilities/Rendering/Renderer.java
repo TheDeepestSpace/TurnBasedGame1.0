@@ -38,14 +38,18 @@ public class Renderer {
     /** MODEL INSTANCE RENDERING */
 
     public static void renderModelInstance(ModelInstance modelInstance) {
-        TurnBasedGame.gameScreen.modelBatch.begin(Camera.camera);
-        TurnBasedGame.gameScreen.modelBatch.render(modelInstance, TurnBasedGame.gameScreen.environment);
-        TurnBasedGame.gameScreen.modelBatch.end();
-        TurnBasedGame.gameScreen.modelBatch.flush();
+        if (visible(modelInstance)) {
+            TurnBasedGame.gameScreen.modelBatch.begin(Camera.camera);
+            TurnBasedGame.gameScreen.modelBatch.render(modelInstance, TurnBasedGame.gameScreen.environment);
+            TurnBasedGame.gameScreen.modelBatch.end();
+            TurnBasedGame.gameScreen.modelBatch.flush();
+        }
     }
 
     public static void renderModelInstanceShadow(ModelInstance modelInstance) {
-        TurnBasedGame.gameScreen.shadowBatch.render(modelInstance);
+        if (visible(modelInstance)) {
+            TurnBasedGame.gameScreen.shadowBatch.render(modelInstance);
+        }
     }
 
     /** GETTERS */
