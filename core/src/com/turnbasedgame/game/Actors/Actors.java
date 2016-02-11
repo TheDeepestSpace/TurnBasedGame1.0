@@ -1,15 +1,19 @@
 package com.turnbasedgame.game.Actors;
 
 import com.badlogic.gdx.math.Vector3;
+import com.turnbasedgame.game.Actors.AI.AI;
 import com.turnbasedgame.game.Actors.Entity.Entity;
 import com.turnbasedgame.game.Actors.Grid.Grid;
 import com.turnbasedgame.game.Utilities.Console;
+import com.turnbasedgame.game.Utilities.Game;
 
 /**
  * Created by Boris on 10.02.2016.
  * Project: TurnBasedGame1.0
  */
 public class Actors {
+    public static AI gameAI;
+
     /** INITIALISING */
 
     public static void initialise() {
@@ -17,6 +21,9 @@ public class Actors {
         Grid.initialise();
         Entity.initialiseClass();
         informInitialised();
+
+        gameAI = new AI();
+        gameAI.initialise();
     }
 
     /** CREATING AND SETTING UP */
@@ -29,6 +36,8 @@ public class Actors {
         Entity.addInstance(new Vector3(18, 2, 1), true);
 
         informCreated();
+
+        Game.start();
     }
 
     /** UPDATING */

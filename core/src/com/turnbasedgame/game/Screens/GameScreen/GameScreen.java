@@ -86,7 +86,7 @@ public class GameScreen extends Screen {
         Console.addInstance(
                 "gameConsole",
                 new Vector2(Gdx.graphics.getWidth() / 2 - 200, Gdx.graphics.getHeight() / 2),
-                1,
+                0,
                 6000
         );
 
@@ -176,6 +176,6 @@ public class GameScreen extends Screen {
 
     @Override
     public void informDisposed() {
-        Console.addLine("main", "Game Screen was successfully disposed", Console.LineType.SUCCESS);
+        Console.addLine("main", "Game Screen was successfully disposed", Console.LineType.DISPOSED);
     }
 }

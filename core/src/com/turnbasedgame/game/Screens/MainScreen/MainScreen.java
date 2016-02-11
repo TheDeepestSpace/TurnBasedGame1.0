@@ -90,6 +90,6 @@ public class MainScreen extends Screen{
 
     @Override
     public void informDisposed() {
-        Console.addLine("main", "Main Screen was successfully disposed", Console.LineType.SUCCESS);
+        Console.addLine("main", "Main Screen was successfully disposed", Console.LineType.DISPOSED);
     }
 }

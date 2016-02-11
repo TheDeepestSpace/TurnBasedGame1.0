@@ -40,7 +40,10 @@ public class Console {
         WARNING,
         ERROR,
         REGULAR,
-        SUCCESS
+        SUCCESS,
+        INITIALISED,
+        DISPOSED,
+        SPAWNED
     }
 
     /** INITIALISING */
@@ -163,6 +166,9 @@ public class Console {
         else if (lineType == LineType.ERROR) return Color.RED;
         else if (lineType == LineType.REGULAR) return Color.WHITE;
         else if (lineType == LineType.SUCCESS) return Color.GREEN;
+        else if (lineType == LineType.INITIALISED) return Color.GOLD;
+        else if (lineType == LineType.DISPOSED) return Color.ORANGE;
+        else if (lineType == LineType.SPAWNED) return Color.LIME;
         else return Color.BLACK;
     }
 

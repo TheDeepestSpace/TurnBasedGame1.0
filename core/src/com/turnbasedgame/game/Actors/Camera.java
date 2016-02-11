@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.turnbasedgame.game.Actors.Grid.Grid;
 import com.turnbasedgame.game.Screens.GameScreen.GameScreen;
+import com.turnbasedgame.game.Utilities.Console;
 
 /**
  * Created by Boris on 10.02.2016.
@@ -34,6 +35,8 @@ public class Camera {
         distance = 1000;
         centerColor = Color.WHITE;
         isRenderingCenter = settings.getBoolean("IS_RENDERING_CENTER", true);
+
+        informInitialised();
     }
 
     /** CREATING AND SETTING */
@@ -110,5 +113,11 @@ public class Camera {
     public static void dispose() {
         settings.putBoolean("IS_RENDERING_CENTER", isRenderingCenter);
         settings.flush();
+    }
+
+    /** INFORMING */
+
+    static void informInitialised() {
+        Console.addLine("main", "Camera was successfully initialised!", Console.LineType.INITIALISED);
     }
 }

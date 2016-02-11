@@ -32,8 +32,6 @@ public class Entity {
 
     boolean artificial;
 
-
-
     /* VISUALISING */
 
     Model model;
@@ -172,7 +170,7 @@ public class Entity {
     /** INFORMING */
 
     void informCreated() {
-        Console.addLine("gameConsole", this.fullName + " was spawned at " + this.gridCoordinates, Console.LineType.SUCCESS);
+        Console.addLine("gameConsole", this.fullName + " was spawned at " + this.gridCoordinates, Console.LineType.SPAWNED);
     }
 
     void informDisposed() {
