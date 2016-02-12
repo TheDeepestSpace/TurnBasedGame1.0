@@ -2,42 +2,43 @@ package com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.FinishGameTree;
 
 import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
+import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.turnbasedgame.game.Actors.AI.AI;
 import com.turnbasedgame.game.Actors.AI.Tasks.InformableTaskInterface;
-import com.turnbasedgame.game.Actors.Entity.Entity;
 import com.turnbasedgame.game.Utilities.Console;
+import com.turnbasedgame.game.Utilities.Game;
 
 /**
  * Created by Boris on 12.02.2016.
  * Project: TurnBasedGame1.0
  */
-public class EnemyExistsCondition extends LeafTask<AI> implements InformableTaskInterface {
+public class FinishGameTask extends LeafTask<AI> implements InformableTaskInterface {
+    @TaskAttribute(required = true)
+    public String reason;
+
     @Override
     public void informExecuted() {
-        Console.addLine("ai", "Checking if there are any enemies ... ", Console.LineType.REGULAR);
+        Console.addLine("ai", "Finishing game ... ", Console.LineType.WARNING);
     }
 
     @Override
     public void informSucceeded() {
-        Console.addLine("ai", "Enemy exists!", Console.LineType.SUCCESS);
+        Console.addLine("ai", "Finished game! Reason: " + reason, Console.LineType.ERROR);
+        Console.addLine("gameConsole", "Reason: " + reason, Console.LineType.ERROR);
     }
 
     @Override
     public void informFailed() {
-        Console.addLine("ai", "No enemies found!", Console.LineType.ERROR);
+
     }
 
     @Override
     public Status execute() {
         informExecuted();
+        Game.finish();
+        informSucceeded();
 
-        if (Entity.userList.size() == 0) {
-            informFailed();
-            return Status.FAILED;
-        }else {
-            informSucceeded();
-            return Status.SUCCEEDED;
-        }
+        return Status.SUCCEEDED;
     }
 
     @Override

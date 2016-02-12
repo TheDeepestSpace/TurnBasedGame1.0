@@ -10,7 +10,7 @@ import com.turnbasedgame.game.Utilities.Game;
  * Created by Boris on 11.02.2016.
  * Project: TurnBasedGame1.0
  */
-public class FinishTurnTask extends LeafTask<AI> implements InromablreTaskInterface{
+public class FinishTurnTask extends LeafTask<AI> implements InformableTaskInterface {
     @Override
     public Status execute() {
         Game.finishTurn();

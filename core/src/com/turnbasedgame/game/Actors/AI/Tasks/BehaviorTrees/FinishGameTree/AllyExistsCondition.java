@@ -11,27 +11,27 @@ import com.turnbasedgame.game.Utilities.Console;
  * Created by Boris on 12.02.2016.
  * Project: TurnBasedGame1.0
  */
-public class EnemyExistsCondition extends LeafTask<AI> implements InformableTaskInterface {
+public class AllyExistsCondition extends LeafTask<AI> implements InformableTaskInterface {
     @Override
     public void informExecuted() {
-        Console.addLine("ai", "Checking if there are any enemies ... ", Console.LineType.REGULAR);
+        Console.addLine("ai", "Checking if there any allies ...", Console.LineType.REGULAR);
     }
 
     @Override
     public void informSucceeded() {
-        Console.addLine("ai", "Enemy exists!", Console.LineType.SUCCESS);
+        Console.addLine("ai", "Ally exists!", Console.LineType.SUCCESS);
     }
 
     @Override
     public void informFailed() {
-        Console.addLine("ai", "No enemies found!", Console.LineType.ERROR);
+        Console.addLine("ai", "No allies found!", Console.LineType.ERROR);
     }
 
     @Override
     public Status execute() {
         informExecuted();
 
-        if (Entity.userList.size() == 0) {
+        if (Entity.aiList.size() == 0) {
             informFailed();
             return Status.FAILED;
         }else {

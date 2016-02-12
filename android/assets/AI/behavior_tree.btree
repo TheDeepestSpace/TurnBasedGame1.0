@@ -1,12 +1,20 @@
 # FINISH GAME B-TREE TASKS / CONDITIONS #
 
+import finishGame:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.FinishGameTree.FinishGameTask"
+
 import enemyExists?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.FinishGameTree.EnemyExistsCondition"
+import allyExists?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.FinishGameTree.AllyExistsCondition"
 
 subtree name:"finishGame"
-    sequence
-        invert
-            enemyExists?
-
+    selector
+        sequence
+            invert
+                enemyExists?
+            finishGame reason:"no enemies found"
+        sequence
+            invert
+                allyExists?
+            finishGame reason:"no allies found"
 
 # ROOT TASKS / CONDITIONS#
 

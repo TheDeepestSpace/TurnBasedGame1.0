@@ -20,6 +20,14 @@ public class Game {
         Console.addLine("gameConsole", "Game started!", Console.LineType.SUCCESS);
     }
 
+    public static void finish() {
+        informGameFinished();
+    }
+
+    static void informGameFinished() {
+        Console.addLine("gameConsole", "Game finished!", Console.LineType.ERROR);
+    }
+
     public static void startTurn() {
         if (aiTurn) {
             informAIStartedTurn();
