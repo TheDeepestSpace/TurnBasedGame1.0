@@ -10,7 +10,7 @@ import com.turnbasedgame.game.Utilities.Game;
  * Created by Boris on 11.02.2016.
  * Project: TurnBasedGame1.0
  */
-public class FinishTurnTask extends LeafTask<AI> {
+public class FinishTurnTask extends LeafTask<AI> implements InromablreTaskInterface{
     @Override
     public Status execute() {
         Game.finishTurn();
@@ -21,12 +21,19 @@ public class FinishTurnTask extends LeafTask<AI> {
         return Status.SUCCEEDED;
     }
 
-    void informExecuted() {
+    @Override
+    public void informExecuted() {
         Console.addLine("ai", "AI invoked Task: 'finishTurn'. Proceeding ...", Console.LineType.REGULAR);
     }
 
-    void informSucceeded() {
+    @Override
+    public void informSucceeded() {
         Console.addLine("ai", "AI finished Task: 'finishTurn' with status: 'SUCCEEDED' ", Console.LineType.SUCCESS);
+    }
+
+    @Override
+    public void informFailed() {
+
     }
 
     @Override

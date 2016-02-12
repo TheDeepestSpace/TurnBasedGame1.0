@@ -1,4 +1,18 @@
+# FINISH GAME B-TREE TASKS / CONDITIONS #
+
+import enemyExists?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.FinishGameTree.EnemyExistsCondition"
+
+subtree name:"finishGame"
+    sequence
+        invert
+            enemyExists?
+
+
+# ROOT TASKS / CONDITIONS#
+
 import finishTurn:"com.turnbasedgame.game.Actors.AI.Tasks.FinishTurnTask"
 
 root
-    finishTurn
+    selector
+        $finishGame
+        finishTurn
