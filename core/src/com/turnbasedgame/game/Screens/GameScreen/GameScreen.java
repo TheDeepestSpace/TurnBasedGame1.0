@@ -76,7 +76,7 @@ public class GameScreen extends Screen {
         ShaderProvider shaderProvider = new DefaultShaderProvider(config);
 
         this.environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1f));
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.0f, 0.0f, 0.0f, 1f));
 
         this.modelBatch = new ModelBatch(shaderProvider);
         shapeRenderer = new ShapeRenderer();

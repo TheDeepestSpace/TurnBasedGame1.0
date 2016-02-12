@@ -1,7 +1,9 @@
 package com.turnbasedgame.game.Actors.Entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.Vector3;
 import com.turnbasedgame.game.TurnBasedGame;
 import com.turnbasedgame.game.Utilities.Console;
@@ -32,10 +34,17 @@ public class Entity {
 
     boolean artificial;
 
+    /* SETTABLE PROPERTIES */
+
+    int radiusOfSight;
+
     /* VISUALISING */
 
     Model model;
     ModelInstance modelInstance;
+
+    PointLight sight;
+    Vector3 pointLightSceneCoordinates;
 
     /** INITIALISING */
 
@@ -53,6 +62,10 @@ public class Entity {
         this.sceneCoordinates = new Vector3();
 
         this.artificial = false;
+
+        this.radiusOfSight = 0;
+
+        this.pointLightSceneCoordinates = new Vector3();
     }
 
     Entity() {
@@ -81,6 +94,9 @@ public class Entity {
         if (!artificial) userList.add(this);
 
         this.setUpModel();
+        this.setUpPointLight();
+
+        this.setUpSettableProperties();
 
         this.informCreated();
     }
@@ -91,6 +107,24 @@ public class Entity {
 
         this.updateSceneCoordinates();
         this.updateModelPosition();
+    }
+
+    void setUpPointLight() {
+        if (this.artificial) {
+            TurnBasedGame.gameScreen.environment.add(
+                    this.sight = new PointLight().set(new Color(0.5f, 0.2f, 0.2f, 1f), null, 30)
+            );
+        } else {
+            TurnBasedGame.gameScreen.environment.add(
+                    this.sight = new PointLight().set(new Color(0.2f, 0.2f, 0.5f, 1f), null, 30)
+            );
+        }
+
+        this.updatePointLight();
+    }
+
+    void setUpSettableProperties() {
+        this.radiusOfSight = 5;
     }
 
     /** UPDATING */
@@ -116,6 +150,17 @@ public class Entity {
 
     void updateModelBoundingBox() {
 
+    }
+
+    void updatePointLight() {
+        this.updatePointLightSceneCoordinates();
+        this.sight.setPosition(this.pointLightSceneCoordinates);
+    }
+
+    void updatePointLightSceneCoordinates() {
+        this.pointLightSceneCoordinates.x = this.sceneCoordinates.x;
+        this.pointLightSceneCoordinates.y = this.sceneCoordinates.y + 3;
+        this.pointLightSceneCoordinates.z = this.sceneCoordinates.z;
     }
 
     /** INTERACTING */

@@ -46,7 +46,7 @@ public class DefaultShader extends BaseShader {
         /** The number of directional lights to use */
         public int numDirectionalLights = 2;
         /** The number of point lights to use */
-        public int numPointLights = 10;
+        public int numPointLights = 100;
         /** The number of spot lights to use */
         public int numSpotLights = 10;
         /** The number of bones to use */
