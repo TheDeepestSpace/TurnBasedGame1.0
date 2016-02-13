@@ -337,8 +337,8 @@ void main() {
                 float dist2 = dot(lightDir, lightDir);
                 vec3 displacedLightDir = u_pointLights[i].displacedPosition - pos.xyz;
                 float displacedDist = dot(displacedLightDir, displacedLightDir);
-                lightDir *= inversesqrt(dist2);
-                float NdotL = clamp(dot(normal, lightDir), 0.1, 0.5);
+                lightDir *= inversesqrt(displacedDist);
+                float NdotL = clamp(dot(lightDir, lightDir), 0.7, 0.7);
 
                 if (displacedDist < u_pointLights[i].radius){
                 	vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));

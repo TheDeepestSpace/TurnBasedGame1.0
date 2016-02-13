@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.turnbasedgame.game.Global;
 import com.turnbasedgame.game.TurnBasedGame;
+import com.turnbasedgame.game.UserInterface.GlobalUI;
 import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Geometry;
 import com.turnbasedgame.game.Utilities.Rendering.Renderer;
@@ -30,21 +33,34 @@ public class Entity {
     int listIndex;
 
     Vector3 gridCoordinates;
-    public Vector3 sceneCoordinates;
+    Vector3 sceneCoordinates;
 
     boolean artificial;
 
+    int healthPoints;
+
+    boolean selected;
+
+    static boolean multipleSelection;
+
     /* SETTABLE PROPERTIES */
 
-    public int radiusOfSight;
+    Vector3 modelSize;
+
+    int radiusOfSight;
+    int initialHealthPoints;
 
     /* VISUALISING */
 
     Model model;
     ModelInstance modelInstance;
 
-    PointLight sight;
+    PointLight sightRange;
     Vector3 pointLightSceneCoordinates;
+
+    /* STATS / TRACKING */
+
+    static Table propertiesTable;
 
     /** INITIALISING */
 
@@ -52,6 +68,18 @@ public class Entity {
         list = new ArrayList<Entity>();
         userList = new ArrayList<Entity>();
         aiList = new ArrayList<Entity>();
+
+        initialisePropertiesTable();
+
+        multipleSelection = false;
+    }
+
+    static void initialisePropertiesTable() {
+        propertiesTable = new Table(GlobalUI.skin);
+        propertiesTable.setBounds(1200, Gdx.graphics.getHeight() / 2, 500, 300);
+        propertiesTable.setVisible(false);
+
+        Global.stage.addActor(propertiesTable);
     }
     
     public void initialise() {
@@ -61,9 +89,17 @@ public class Entity {
         this.gridCoordinates = new Vector3();
         this.sceneCoordinates = new Vector3();
 
+        this.modelSize = new Vector3();
+
         this.artificial = false;
 
+        this.selected = false;
+
+        this.healthPoints = 0;
+
         this.radiusOfSight = 0;
+
+        this.initialHealthPoints = 0;
 
         this.pointLightSceneCoordinates = new Vector3();
     }
@@ -88,15 +124,12 @@ public class Entity {
 
         this.listIndex = list.size() - 1;
 
-        this.fullName = className + "_" + this.listIndex;
-
         if (artificial) aiList.add(this);
         if (!artificial) userList.add(this);
 
+        this.setUpSettableProperties();
         this.setUpModel();
         this.setUpPointLight();
-
-        this.setUpSettableProperties();
 
         this.informCreated();
     }
@@ -112,11 +145,11 @@ public class Entity {
     void setUpPointLight() {
         if (this.artificial) {
             TurnBasedGame.gameScreen.environment.add(
-                    this.sight = new PointLight().set(new Color(0.5f, 0.2f, 0.2f, 1f), null, 30)
+                    this.sightRange = new PointLight().set(new Color(0.5f, 0.2f, 0.2f, 1f), null, 30)
             );
         } else {
             TurnBasedGame.gameScreen.environment.add(
-                    this.sight = new PointLight().set(new Color(0.2f, 0.2f, 0.5f, 1f), null, 30)
+                    this.sightRange = new PointLight().set(new Color(0.2f, 0.2f, 0.5f, 1f), null, 30)
             );
         }
 
@@ -124,7 +157,13 @@ public class Entity {
     }
 
     void setUpSettableProperties() {
+        this.fullName = className + "_" + this.listIndex;
+
+        this.modelSize.set(1, 2, 1);
+
         this.radiusOfSight = 5;
+
+        this.healthPoints = this.initialHealthPoints = 100;
     }
 
     /** UPDATING */
@@ -148,13 +187,23 @@ public class Entity {
         this.updateModelBoundingBox();
     }
 
+    static Vector3 boundsMax = new Vector3();
+    static Vector3 boundsMin = new Vector3();
     void updateModelBoundingBox() {
+        boundsMax.x = this.sceneCoordinates.x + this.modelSize.x / 2;
+        boundsMax.y = this.sceneCoordinates.y + this.modelSize.y / 2;
+        boundsMax.z = this.sceneCoordinates.z + this.modelSize.z / 2;
 
+        boundsMin.x = this.sceneCoordinates.x - this.modelSize.x / 2;
+        boundsMin.y = this.sceneCoordinates.y - this.modelSize.y / 2;
+        boundsMin.z = this.sceneCoordinates.z - this.modelSize.z / 2;
+
+        this.modelInstance.bounds.set(boundsMin, boundsMax);
     }
 
     void updatePointLight() {
         this.updatePointLightSceneCoordinates();
-        this.sight.setPosition(this.pointLightSceneCoordinates);
+        this.sightRange.setPosition(this.pointLightSceneCoordinates);
     }
 
     void updatePointLightSceneCoordinates() {
@@ -176,7 +225,44 @@ public class Entity {
         this.informDied();
     }
 
+    public void select(boolean byArtificial) {
+        this.selected = true;
+
+        propertiesTable.setVisible(true);
+
+        this.informSelected(byArtificial);
+    }
+
+    public void deselect(boolean byArtificial) {
+        this.selected = false;
+        this.informDeselected(byArtificial);
+    }
+
     /** GETTERS / SETTERS */
+
+    public static Entity getEntity(String fullName) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).fullName.equals(fullName)) return list.get(i);
+        }
+
+        return null;
+    }
+
+    public Vector3 getSceneCoordinates() {
+        return this.sceneCoordinates.cpy();
+    }
+
+    public int getRadiusOfSight() {
+        return this.radiusOfSight;
+    }
+
+    public ModelInstance getModelInstance() {
+        return this.modelInstance;
+    }
+
+    public boolean isSelected() {
+        return this.selected;
+    }
 
     /** RENDERING */
 
@@ -224,5 +310,21 @@ public class Entity {
 
     void informDied() {
         Console.addLine("gameConsole", this.fullName + " died!", Console.LineType.ERROR);
+    }
+
+    void informSelected(boolean byArtificial) {
+        if (byArtificial) {
+            Console.addLine("gameConsole", this.fullName + " was selected by AI", Console.LineType.WARNING);
+        } else {
+            Console.addLine("gameConsole", this.fullName + " was selected by User", Console.LineType.WARNING);
+        }
+    }
+
+    void informDeselected(boolean byArtificial) {
+        if (byArtificial) {
+            Console.addLine("gameConsole", this.fullName + " was deselected by AI", Console.LineType.WARNING);
+        } else {
+            Console.addLine("gameConsole", this.fullName + " was deselected by User", Console.LineType.WARNING);
+        }
     }
 }
