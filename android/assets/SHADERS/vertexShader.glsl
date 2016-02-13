@@ -164,6 +164,8 @@ struct PointLight
 {
 	vec3 color;
 	vec3 position;
+	float radius;
+	vec3 displacedPosition;
 };
 uniform PointLight u_pointLights[numPointLights];
 #endif // numPointLights
@@ -333,10 +335,12 @@ void main() {
 			for (int i = 0; i < numPointLights; i++) {
 				vec3 lightDir = u_pointLights[i].position - pos.xyz;
                 float dist2 = dot(lightDir, lightDir);
+                vec3 displacedLightDir = u_pointLights[i].displacedPosition - pos.xyz;
+                float displacedDist = dot(displacedLightDir, displacedLightDir);
                 lightDir *= inversesqrt(dist2);
-                float NdotL = clamp(dot(normal, lightDir), 0.0, 0.5);
+                float NdotL = clamp(dot(normal, lightDir), 0.1, 0.5);
 
-                if (dist2 < 30.0){
+                if (displacedDist < u_pointLights[i].radius){
                 	vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
                 	v_lightDiffuse += value;
                 	#ifdef specularFlag

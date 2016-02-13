@@ -15,20 +15,17 @@ public class FinishTurnTask extends LeafTask<AI> implements InformableTaskInterf
     public Status execute() {
         Game.finishTurn();
 
-        informExecuted();
-        informSucceeded();
-
         return Status.SUCCEEDED;
     }
 
     @Override
     public void informExecuted() {
-        Console.addLine("ai", "AI invoked Task: 'finishTurn'. Proceeding ...", Console.LineType.REGULAR);
+
     }
 
     @Override
     public void informSucceeded() {
-        Console.addLine("ai", "AI finished Task: 'finishTurn' with status: 'SUCCEEDED' ", Console.LineType.SUCCESS);
+
     }
 
     @Override

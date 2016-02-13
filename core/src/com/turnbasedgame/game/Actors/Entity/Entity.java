@@ -30,13 +30,13 @@ public class Entity {
     int listIndex;
 
     Vector3 gridCoordinates;
-    Vector3 sceneCoordinates;
+    public Vector3 sceneCoordinates;
 
     boolean artificial;
 
     /* SETTABLE PROPERTIES */
 
-    int radiusOfSight;
+    public int radiusOfSight;
 
     /* VISUALISING */
 

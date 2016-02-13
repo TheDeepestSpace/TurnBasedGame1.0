@@ -32,6 +32,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.turnbasedgame.game.Actors.Entity.Entity;
 
 /**
  * Created by Boris on 10.02.2016.
@@ -435,6 +436,8 @@ public class DefaultShader extends BaseShader {
     protected final int u_pointLights0color = register(new Uniform("u_pointLights[0].color"));
     protected final int u_pointLights0position = register(new Uniform("u_pointLights[0].position"));
     protected final int u_pointLights0intensity = register(new Uniform("u_pointLights[0].intensity"));
+    protected final int u_pointLights0radius = register(new Uniform("u_pointLights[0].radius"));
+    protected final int u_pointLights0displacedPosition = register(new Uniform("u_pointLights[0].displacedPosition"));
     protected final int u_pointLights1color = register(new Uniform("u_pointLights[1].color"));
     protected final int u_spotLights0color = register(new Uniform("u_spotLights[0].color"));
     protected final int u_spotLights0position = register(new Uniform("u_spotLights[0].position"));
@@ -457,6 +460,8 @@ public class DefaultShader extends BaseShader {
     protected int pointLightsColorOffset;
     protected int pointLightsPositionOffset;
     protected int pointLightsIntensityOffset;
+    protected int pointLightsRadiusOffset;
+    protected int pointLightsDisplacedPositionOffset;
     protected int pointLightsSize;
     protected int spotLightsLoc;
     protected int spotLightsColorOffset;
@@ -585,6 +590,8 @@ public class DefaultShader extends BaseShader {
         pointLightsColorOffset = loc(u_pointLights0color) - pointLightsLoc;
         pointLightsPositionOffset = loc(u_pointLights0position) - pointLightsLoc;
         pointLightsIntensityOffset = has(u_pointLights0intensity) ? loc(u_pointLights0intensity) - pointLightsLoc : -1;
+        pointLightsRadiusOffset = loc(u_pointLights0radius) - pointLightsLoc;
+        pointLightsDisplacedPositionOffset = loc(u_pointLights0displacedPosition) - pointLightsLoc;
         pointLightsSize = loc(u_pointLights1color) - pointLightsLoc;
         if (pointLightsSize < 0) pointLightsSize = 0;
 
@@ -823,6 +830,10 @@ public class DefaultShader extends BaseShader {
                         pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
                 program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position.x, pointLights[i].position.y,
                         pointLights[i].position.z);
+                if (i < Entity.list.size()) {
+                    program.setUniformf(idx + pointLightsRadiusOffset, (float) Entity.list.get(i).radiusOfSight * 5f);
+                    program.setUniformf(idx + pointLightsDisplacedPositionOffset, Entity.list.get(i).sceneCoordinates.cpy());
+                }
                 if (pointLightsIntensityOffset >= 0) program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
                 if (pointLightsSize <= 0) break;
             }
