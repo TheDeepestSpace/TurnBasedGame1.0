@@ -2,6 +2,7 @@ package com.turnbasedgame.game.Actors.AI.Tasks.EntityInteraction.Entity;
 
 import com.badlogic.gdx.ai.btree.LeafTask;
 import com.badlogic.gdx.ai.btree.Task;
+import com.badlogic.gdx.ai.btree.annotation.TaskAttribute;
 import com.turnbasedgame.game.Actors.AI.AI;
 import com.turnbasedgame.game.Actors.AI.Tasks.InformableTaskInterface;
 import com.turnbasedgame.game.Actors.Entity.Entity;
@@ -13,6 +14,8 @@ import com.turnbasedgame.game.Utilities.Console;
  */
 public class DeselectEntityTask extends LeafTask<AI> implements InformableTaskInterface {
     String failReason;
+
+    @TaskAttribute (required = false)
     String deselectedEntityFullName;
 
     @Override

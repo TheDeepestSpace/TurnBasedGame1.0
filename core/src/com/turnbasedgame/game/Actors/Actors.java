@@ -32,6 +32,7 @@ public class Actors {
         Camera.create();
 
         Grid.setUp();
+        Entity.setUp();
 
         Entity.addInstance(new Vector3(18, 2, 1), true);
         Entity.addInstance(new Vector3(4, 2, 15), false);

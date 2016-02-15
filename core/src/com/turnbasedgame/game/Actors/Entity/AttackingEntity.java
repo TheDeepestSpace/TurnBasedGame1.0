@@ -9,11 +9,30 @@ public class AttackingEntity extends Entity{
 
     /* PROPERTIES */
 
+    String targetFullName;
+
+    int killsCount;
+
     /* SETTABLE PROPERTIES */
+
+    int damagePoints;
 
     /** INITIALISING */
 
+    @Override
+    void initialise() {
+        super.initialise();
+
+        this.targetFullName = "n/a";
+
+        this.killsCount = 0;
+
+        this.damagePoints = 0;
+    }
+
     /** CREATING AND SETTING UP */
+
+    AttackingEntity() {super();}
 
     /** UPDATING */
 

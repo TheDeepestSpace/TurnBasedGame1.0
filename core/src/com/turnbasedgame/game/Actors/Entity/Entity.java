@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.turnbasedgame.game.Global;
 import com.turnbasedgame.game.TurnBasedGame;
+import com.turnbasedgame.game.UserInterface.Actors.Log;
 import com.turnbasedgame.game.UserInterface.GlobalUI;
 import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Geometry;
@@ -82,7 +83,7 @@ public class Entity {
         Global.stage.addActor(propertiesTable);
     }
     
-    public void initialise() {
+    void initialise() {
         this.fullName = "n/a";
         this.listIndex = -1;
 
@@ -119,25 +120,19 @@ public class Entity {
     public void setUp(Vector3 gridCoordinates, boolean artificial) {
         this.gridCoordinates = gridCoordinates.cpy();
         this.artificial = artificial;
-
         list.add(this);
-
         this.listIndex = list.size() - 1;
-
         if (artificial) aiList.add(this);
         if (!artificial) userList.add(this);
-
         this.setUpSettableProperties();
         this.setUpModel();
         this.setUpPointLight();
-
         this.informCreated();
     }
 
     void setUpModel() {
         this.model = TurnBasedGame.gameScreen.modelLoader.loadModel(Gdx.files.internal("ACTORS/ENTITY/" + className + "/MODELS/model" + this.artificial + ".g3db"));
         this.modelInstance = new ModelInstance(this.model);
-
         this.updateSceneCoordinates();
         this.updateModelPosition();
     }
@@ -152,18 +147,38 @@ public class Entity {
                     this.sightRange = new PointLight().set(new Color(0.2f, 0.2f, 0.5f, 1f), null, 30)
             );
         }
-
         this.updatePointLight();
     }
 
     void setUpSettableProperties() {
         this.fullName = className + "_" + this.listIndex;
-
         this.modelSize.set(1, 2, 1);
-
         this.radiusOfSight = 5;
-
         this.healthPoints = this.initialHealthPoints = 100;
+    }
+
+    public static void setUp() {
+        setUpPropertiesTable();
+    }
+
+    static void setUpPropertiesTable() {
+        propertiesTable.reset();
+        propertiesTable.add(
+                Log.addInstance("ENTITY_PROPERTIES_TABLE_FULL_NAME", "n/a", "font32", Color.GOLD)
+        ).left().row();
+        propertiesTable.add(
+                Log.addInstance("ENTITY_PROPERTIES_TABLE_HEALTH_POINTS", "n/a", "font16", Color.WHITE)
+        ).left().row();
+        propertiesTable.add(
+                Log.addInstance("ENTITY_PROPERTIES_TABLE_ARTIFICIAL", "n/a", "font16", Color.WHITE)
+        ).left().row();
+        propertiesTable.add(
+                Log.addInstance("ENTITY_PROPERTIES_TABLE_GRID_COORDINATES", "n/a", "font16", Color.WHITE)
+        ).left().row();
+        propertiesTable.add(
+                Log.addInstance("ENTITY_PROPERTIES_TABLE_RANGE_OF_SIGHT", "n/a", "font16", Color.WHITE)
+        ).left();
+
     }
 
     /** UPDATING */
@@ -193,11 +208,9 @@ public class Entity {
         boundsMax.x = this.sceneCoordinates.x + this.modelSize.x / 2;
         boundsMax.y = this.sceneCoordinates.y + this.modelSize.y / 2;
         boundsMax.z = this.sceneCoordinates.z + this.modelSize.z / 2;
-
         boundsMin.x = this.sceneCoordinates.x - this.modelSize.x / 2;
         boundsMin.y = this.sceneCoordinates.y - this.modelSize.y / 2;
         boundsMin.z = this.sceneCoordinates.z - this.modelSize.z / 2;
-
         this.modelInstance.bounds.set(boundsMin, boundsMax);
     }
 
@@ -212,29 +225,38 @@ public class Entity {
         this.pointLightSceneCoordinates.z = this.sceneCoordinates.z;
     }
 
+    void updatePropertiesTable() {
+        Log.getLog("ENTITY_PROPERTIES_TABLE_FULL_NAME").setText(this.fullName);
+        Log.getLog("ENTITY_PROPERTIES_TABLE_HEALTH_POINTS").setText("health points: " + this.healthPoints + " of " + this.initialHealthPoints);
+        if (this.artificial) {
+            Log.getLog("ENTITY_PROPERTIES_TABLE_ARTIFICIAL").setText("AI driven");
+        } else {
+            Log.getLog("ENTITY_PROPERTIES_TABLE_ARTIFICIAL").setText("User driven");
+        }
+        Log.getLog("ENTITY_PROPERTIES_TABLE_GRID_COORDINATES").setText("grid coordinates: " + this.gridCoordinates);
+        Log.getLog("ENTITY_PROPERTIES_TABLE_RANGE_OF_SIGHT").setText("range of sight: " + this.radiusOfSight);
+    }
+
     /** INTERACTING */
 
     void die() {
         if (this.artificial) aiList.remove(this);
         if (!this.artificial) userList.remove(this);
-
         list.remove(this);
-
         this.dispose();
-
         this.informDied();
     }
 
     public void select(boolean byArtificial) {
         this.selected = true;
-
         propertiesTable.setVisible(true);
-
+        this.updatePropertiesTable();
         this.informSelected(byArtificial);
     }
 
     public void deselect(boolean byArtificial) {
         this.selected = false;
+        propertiesTable.setVisible(false);
         this.informDeselected(byArtificial);
     }
 
