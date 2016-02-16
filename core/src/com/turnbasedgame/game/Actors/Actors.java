@@ -2,6 +2,7 @@ package com.turnbasedgame.game.Actors;
 
 import com.badlogic.gdx.math.Vector3;
 import com.turnbasedgame.game.Actors.AI.AI;
+import com.turnbasedgame.game.Actors.Entity.AttackingEntity;
 import com.turnbasedgame.game.Actors.Entity.Entity;
 import com.turnbasedgame.game.Actors.Grid.Grid;
 import com.turnbasedgame.game.Utilities.Console;
@@ -33,9 +34,10 @@ public class Actors {
 
         Grid.setUp();
         Entity.setUp();
+        AttackingEntity.setUp();
 
-        Entity.addInstance(new Vector3(18, 2, 1), true);
-        Entity.addInstance(new Vector3(4, 2, 15), false);
+        AttackingEntity.addInstance(new Vector3(18, 2, 1), true);
+        AttackingEntity.addInstance(new Vector3(4, 2, 15), false);
 
         informCreated();
 

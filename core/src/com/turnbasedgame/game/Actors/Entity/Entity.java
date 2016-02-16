@@ -5,9 +5,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.turnbasedgame.game.Global;
 import com.turnbasedgame.game.TurnBasedGame;
+import com.turnbasedgame.game.UserInterface.Actors.Button;
 import com.turnbasedgame.game.UserInterface.Actors.Log;
 import com.turnbasedgame.game.UserInterface.GlobalUI;
 import com.turnbasedgame.game.Utilities.Console;
@@ -63,46 +66,51 @@ public class Entity {
 
     static Table propertiesTable;
 
+    /* INTERACTING */
+
+    static Table actionsTable;
+    ArrayList<ClickListener> listeners;
+
     /** INITIALISING */
 
     public static void initialiseClass() {
         list = new ArrayList<Entity>();
         userList = new ArrayList<Entity>();
         aiList = new ArrayList<Entity>();
-
         initialisePropertiesTable();
-
+        initialiseActionsTable();
         multipleSelection = false;
     }
 
     static void initialisePropertiesTable() {
         propertiesTable = new Table(GlobalUI.skin);
-        propertiesTable.setBounds(1200, Gdx.graphics.getHeight() / 2, 500, 300);
+        propertiesTable.setBounds(1200, Gdx.graphics.getHeight() / 5, 500, 300);
         propertiesTable.setVisible(false);
 
         Global.stage.addActor(propertiesTable);
+    }
+
+    static void initialiseActionsTable() {
+        actionsTable = new Table(GlobalUI.skin);
+        actionsTable.setBounds(Gdx.graphics.getWidth() / 2 - 200, 100, 400, 200);
+        actionsTable.setVisible(false);
+
+        Global.stage.addActor(actionsTable);
     }
     
     void initialise() {
         this.fullName = "n/a";
         this.listIndex = -1;
-
         this.gridCoordinates = new Vector3();
         this.sceneCoordinates = new Vector3();
-
         this.modelSize = new Vector3();
-
         this.artificial = false;
-
         this.selected = false;
-
         this.healthPoints = 0;
-
         this.radiusOfSight = 0;
-
         this.initialHealthPoints = 0;
-
         this.pointLightSceneCoordinates = new Vector3();
+        this.listeners = new ArrayList<ClickListener>();
     }
 
     Entity() {
@@ -127,6 +135,7 @@ public class Entity {
         this.setUpSettableProperties();
         this.setUpModel();
         this.setUpPointLight();
+        if (!this.artificial) this.setUpListeners();
         this.informCreated();
     }
 
@@ -148,6 +157,17 @@ public class Entity {
             );
         }
         this.updatePointLight();
+    }
+
+    void setUpListeners() {
+        this.listeners.add(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        die(false);
+                    }
+                }
+        );
     }
 
     void setUpSettableProperties() {
@@ -177,7 +197,7 @@ public class Entity {
         ).left().row();
         propertiesTable.add(
                 Log.addInstance("ENTITY_PROPERTIES_TABLE_RANGE_OF_SIGHT", "n/a", "font16", Color.WHITE)
-        ).left();
+        ).left().row();
 
     }
 
@@ -237,11 +257,20 @@ public class Entity {
         Log.getLog("ENTITY_PROPERTIES_TABLE_RANGE_OF_SIGHT").setText("range of sight: " + this.radiusOfSight);
     }
 
+    void setUpActionsTable() {
+        actionsTable.reset();
+        actionsTable.add(
+                Button.addInstance("ENTITY_ACTIONS_TABLE_DIE", "KILL", 30, listeners.get(0))
+        );
+        System.gc();
+    }
+
     /** INTERACTING */
 
-    void die() {
+    public void die(boolean byArtificial) {
         if (this.artificial) aiList.remove(this);
         if (!this.artificial) userList.remove(this);
+        if (this.selected) this.deselect(byArtificial);
         list.remove(this);
         this.dispose();
         this.informDied();
@@ -251,12 +280,17 @@ public class Entity {
         this.selected = true;
         propertiesTable.setVisible(true);
         this.updatePropertiesTable();
+        if (!this.artificial) {
+            actionsTable.setVisible(true);
+            this.setUpActionsTable();
+        }
         this.informSelected(byArtificial);
     }
 
     public void deselect(boolean byArtificial) {
         this.selected = false;
         propertiesTable.setVisible(false);
+        if (!this.artificial) actionsTable.setVisible(false);
         this.informDeselected(byArtificial);
     }
 
@@ -284,6 +318,10 @@ public class Entity {
 
     public boolean isSelected() {
         return this.selected;
+    }
+
+    public boolean isArtificial() {
+        return this.artificial;
     }
 
     /** RENDERING */

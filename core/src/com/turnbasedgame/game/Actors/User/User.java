@@ -20,9 +20,9 @@ public class User {
                     deselectEntity();
 
                     Entity.list.get(i).select(false);
-
-                    return;
                 }
+
+                return;
             }
         }
 
