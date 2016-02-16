@@ -356,6 +356,7 @@ public class Entity {
         this.informDisposed();
 
         this.model.dispose();
+        TurnBasedGame.gameScreen.environment.remove(this.sightRange);
     }
 
     /** INFORMING */

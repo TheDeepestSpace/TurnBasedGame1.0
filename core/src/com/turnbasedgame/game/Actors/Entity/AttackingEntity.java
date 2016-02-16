@@ -2,6 +2,9 @@ package com.turnbasedgame.game.Actors.Entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.turnbasedgame.game.UserInterface.Actors.Button;
 import com.turnbasedgame.game.UserInterface.Actors.Log;
 import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Geometry;
@@ -42,6 +45,20 @@ public class AttackingEntity extends Entity{
     AttackingEntity() {super();}
 
     @Override
+    void setUpListeners() {
+        super.setUpListeners();
+
+        listeners.add(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        selectTarget();
+                    }
+                }
+        );
+    }
+
+    @Override
     void setUpSettableProperties() {
         super.setUpSettableProperties();
 
@@ -71,6 +88,17 @@ public class AttackingEntity extends Entity{
         Log.getLog("ENTITY_PROPERTIES_TABLE_DAMAGE_POINTS").setText("damage points: " + this.damagePoints);
     }
 
+    @Override
+    void setUpActionsTable() {
+        super.setUpActionsTable();
+
+        actionsTable.add(
+                Button.addInstance("ENTITY_ACTIONS_TABLE_ATTACK", "ATTACK", 30, listeners.get(1))
+        );
+
+        System.gc();
+    }
+
     /** INTERACTING */
 
     public void attack(String targetFullName) {
@@ -84,6 +112,10 @@ public class AttackingEntity extends Entity{
         }
 
         this.informAttacked(targetFullName);
+    }
+
+    void selectTarget() {
+        informSelectingTarget();
     }
 
     /** GETTERS / SETTERS */
@@ -134,5 +166,9 @@ public class AttackingEntity extends Entity{
 
     void informTargetIsAttacker() {
         Console.addLine("gameConsole", "target = attacker", Console.LineType.ERROR);
+    }
+
+    static void informSelectingTarget() {
+        Console.addLine("gameConsole", "Click on entity to select it as target", Console.LineType.WARNING);
     }
 }
