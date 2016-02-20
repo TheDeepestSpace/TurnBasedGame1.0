@@ -1,3 +1,9 @@
+# ENTITY INTERACTION TASKS #
+
+import killEntity:"com.turnbasedgame.game.Actors.AI.Tasks.EntityInteraction.Entity.KillEntityTask"
+
+import attackEntity:"com.turnbasedgame.game.Actors.AI.Tasks.EntityInteraction.AttackingEntity.AttackTask"
+
 # FINISH GAME B-TREE TASKS / CONDITIONS #
 
 import finishGame:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.FinishGameTree.FinishGameTask"
@@ -16,6 +22,17 @@ subtree name:"finishGame"
                 allyExists?
             finishGame reason:"no allies found"
 
+# SUBTREE #1 TASKS / CONDITIONS #
+# name: strategy1
+
+import strategy1findClosestEnemy:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy1Tree.FindClosestEnemyTask"
+import strategy1attackClosestEnemy:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy1Tree.AttackClosestEnemyTask"
+
+subtree name:"strategy1"
+    sequence
+        strategy1findClosestEnemy
+        strategy1attackClosestEnemy
+
 # ROOT TASKS / CONDITIONS#
 
 import finishTurn:"com.turnbasedgame.game.Actors.AI.Tasks.FinishTurnTask"
@@ -23,4 +40,5 @@ import finishTurn:"com.turnbasedgame.game.Actors.AI.Tasks.FinishTurnTask"
 root
     selector
         $finishGame
+        $strategy1
         finishTurn

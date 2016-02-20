@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.turnbasedgame.game.Actors.User.User;
 import com.turnbasedgame.game.UserInterface.Actors.Button;
 import com.turnbasedgame.game.UserInterface.Actors.Log;
 import com.turnbasedgame.game.Utilities.Console;
@@ -102,19 +103,24 @@ public class AttackingEntity extends Entity{
     /** INTERACTING */
 
     public void attack(String targetFullName) {
-        Entity.getEntity(targetFullName).healthPoints -= this.damagePoints;
-        if (Entity.getEntity(targetFullName).selected) Entity.getEntity(targetFullName).updatePropertiesTable();
+        if (this.canAttack(targetFullName)) {
+            Entity.getEntity(targetFullName).healthPoints -= this.damagePoints;
+            if (Entity.getEntity(targetFullName).selected) Entity.getEntity(targetFullName).updatePropertiesTable();
 
-        if (Entity.getEntity(targetFullName).healthPoints <= 0) {
-            Entity.getEntity(targetFullName).die(false);
-            this.killsCount++;
-            if (this.selected) this.updatePropertiesTable();
+            if (Entity.getEntity(targetFullName).healthPoints <= 0) {
+                Entity.getEntity(targetFullName).die(false);
+                this.killsCount++;
+                if (this.selected) this.updatePropertiesTable();
+            }
+
+            this.informAttacked(targetFullName);
+
+            User.selectingEntityToAttack = false;
         }
-
-        this.informAttacked(targetFullName);
     }
 
     void selectTarget() {
+        User.selectingEntityToAttack = true;
         informSelectingTarget();
     }
 
@@ -165,7 +171,7 @@ public class AttackingEntity extends Entity{
     }
 
     void informTargetIsAttacker() {
-        Console.addLine("gameConsole", "target = attacker", Console.LineType.ERROR);
+        Console.addLine("gameConsole", "target cannot be attacker", Console.LineType.ERROR);
     }
 
     static void informSelectingTarget() {

@@ -3,37 +3,59 @@ package com.turnbasedgame.game.Actors.User;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.collision.Ray;
 import com.turnbasedgame.game.Actors.Camera;
+import com.turnbasedgame.game.Actors.Entity.AttackingEntity;
 import com.turnbasedgame.game.Actors.Entity.Entity;
+import com.turnbasedgame.game.Utilities.Console;
 
 /**
  * Created by Boris on 13.02.2016.
  * Project: TurnBasedGame1.0
  */
 public class User {
+    public static boolean selectingEntity = true;
+    public static boolean selectingEntityToAttack = false;
 
-    public static void selectEntity(int screenX, int screenY) {
+    public static void actOnTouchUp(int screenX, int screenY) {
+        if (selectingEntity) {
+            pickEntity(screenX, screenY);
+
+            if (!pickedEntityName.equals("n/a")) {
+                if (selectingEntityToAttack) {
+                    ((AttackingEntity) Entity.getSelectedEntity()).attack(pickedEntityName);
+                }else {
+                    deselectEntities();
+                    Entity.getEntity(pickedEntityName).select(false);
+                }
+            }else {
+                deselectEntities();
+                selectingEntityToAttack = false;
+            }
+        }
+    }
+
+    /** SELECTING ENTITY */
+
+    static String pickedEntityName;
+    static void pickEntity(int screenX, int screenY) {
         Ray ray = Camera.camera.getPickRay(screenX, screenY);
 
         for (int i = 0; i < Entity.list.size(); i++) {
             if (Intersector.intersectRayBoundsFast(ray, Entity.list.get(i).getModelInstance().bounds)) {
-                if (!Entity.list.get(i).isSelected()) {
-                    deselectEntity();
-
-                    Entity.list.get(i).select(false);
-                }
-
+                pickedEntityName = Entity.list.get(i).getFullName();
                 return;
             }
         }
 
-        deselectEntity();
+        pickedEntityName = "n/a";
     }
 
-    static void deselectEntity() {
+    /** SELECTING ENTITY TO ATTACK */
+
+    static void deselectEntities() {
         for (int i = 0; i < Entity.list.size(); i++) {
-            if (Entity.list.get(i).isSelected()) {
-                Entity.list.get(i).deselect(false);
-            }
+            Entity.list.get(i).deselect(false);
         }
     }
+
+
 }

@@ -15,12 +15,12 @@ import com.turnbasedgame.game.Utilities.Console;
  */
 public class AttackTask extends LeafTask<AI> implements InformableTaskInterface {
     @TaskAttribute (required = true)
-    String attackerFullName;
+    public String attackerFullName;
 
     @TaskAttribute (required = true)
-    String targetFullName;
+    public String targetFullName;
 
-    String failReason;
+    public String failReason;
 
     @Override
     public void informExecuted() {
@@ -30,7 +30,6 @@ public class AttackTask extends LeafTask<AI> implements InformableTaskInterface 
     @Override
     public void informSucceeded() {
         Console.addLine("ai", attackerFullName + " attacked " + targetFullName, Console.LineType.SUCCESS);
-        Console.addLine("gameConsole", attackerFullName + " attacked " + targetFullName, Console.LineType.SUCCESS);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class AttackTask extends LeafTask<AI> implements InformableTaskInterface 
             informFailed();
             return Status.FAILED;
         }else if (!(Entity.getEntity(attackerFullName) instanceof AttackingEntity)
-                || !((AttackingEntity) Entity.getEntity(attackerFullName)).canAttack(attackerFullName)) {
+                || !((AttackingEntity) Entity.getEntity(attackerFullName)).canAttack(targetFullName)) {
             failReason = "attacker can not attack";
             informFailed();
             return Status.FAILED;

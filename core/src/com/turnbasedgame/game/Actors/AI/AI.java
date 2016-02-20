@@ -50,4 +50,9 @@ public class AI {
     void informBehaviorTreeParsed() {
         Console.addLine("ai", "AI Behavior tree was successfully parsed!", Console.LineType.SUCCESS);
     }
+
+    /** STRATEGY #1 */
+
+    public String strategy1attackerName;
+    public String strategy1targetName;
 }

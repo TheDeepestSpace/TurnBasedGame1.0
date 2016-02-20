@@ -277,21 +277,25 @@ public class Entity {
     }
 
     public void select(boolean byArtificial) {
-        this.selected = true;
-        propertiesTable.setVisible(true);
-        this.updatePropertiesTable();
-        if (!this.artificial) {
-            actionsTable.setVisible(true);
-            this.setUpActionsTable();
+        if (!this.selected) {
+            this.selected = true;
+            propertiesTable.setVisible(true);
+            this.updatePropertiesTable();
+            if (!this.artificial) {
+                actionsTable.setVisible(true);
+                this.setUpActionsTable();
+            }
+            this.informSelected(byArtificial);
         }
-        this.informSelected(byArtificial);
     }
 
     public void deselect(boolean byArtificial) {
-        this.selected = false;
-        propertiesTable.setVisible(false);
-        if (!this.artificial) actionsTable.setVisible(false);
-        this.informDeselected(byArtificial);
+        if (this.selected) {
+            this.selected = false;
+            propertiesTable.setVisible(false);
+            if (!this.artificial) actionsTable.setVisible(false);
+            this.informDeselected(byArtificial);
+        }
     }
 
     /** GETTERS / SETTERS */
@@ -303,6 +307,20 @@ public class Entity {
 
         return null;
     }
+
+    public static Entity getSelectedEntity() {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).selected) return list.get(i);
+        }
+
+        return null;
+    }
+
+    public String getFullName() {
+        return this.fullName;
+    }
+
+    public Vector3 getGridCoordinates() { return this.gridCoordinates.cpy(); }
 
     public Vector3 getSceneCoordinates() {
         return this.sceneCoordinates.cpy();

@@ -37,7 +37,7 @@ public class GameScreenInputProcessor implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (!dragged) {
             informTouchUpRegistered(screenX, screenY);
-            User.selectEntity(screenX, screenY);
+            User.actOnTouchUp(screenX, screenY);
         }
         return false;
     }
