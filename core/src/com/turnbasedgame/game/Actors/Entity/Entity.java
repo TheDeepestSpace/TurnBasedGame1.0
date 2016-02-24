@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.turnbasedgame.game.Actors.User.User;
 import com.turnbasedgame.game.Global;
 import com.turnbasedgame.game.TurnBasedGame;
 import com.turnbasedgame.game.UserInterface.Actors.Button;
@@ -274,6 +275,8 @@ public class Entity {
         list.remove(this);
         this.dispose();
         this.informDied();
+
+        User.interactedWithEntity = true;
     }
 
     public void select(boolean byArtificial) {

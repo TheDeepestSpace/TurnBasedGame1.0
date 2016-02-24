@@ -5,13 +5,15 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.turnbasedgame.game.Actors.Camera;
 import com.turnbasedgame.game.Actors.Entity.AttackingEntity;
 import com.turnbasedgame.game.Actors.Entity.Entity;
-import com.turnbasedgame.game.Utilities.Console;
+import com.turnbasedgame.game.Utilities.Game;
 
 /**
  * Created by Boris on 13.02.2016.
  * Project: TurnBasedGame1.0
  */
 public class User {
+    public static boolean interactedWithEntity = false;
+
     public static boolean selectingEntity = true;
     public static boolean selectingEntityToAttack = false;
 
@@ -21,7 +23,7 @@ public class User {
 
             if (!pickedEntityName.equals("n/a")) {
                 if (selectingEntityToAttack) {
-                    ((AttackingEntity) Entity.getSelectedEntity()).attack(pickedEntityName);
+                    ((AttackingEntity) Entity.getSelectedEntity()).attack(pickedEntityName, false);
                 }else {
                     deselectEntities();
                     Entity.getEntity(pickedEntityName).select(false);
@@ -54,6 +56,15 @@ public class User {
     static void deselectEntities() {
         for (int i = 0; i < Entity.list.size(); i++) {
             Entity.list.get(i).deselect(false);
+        }
+    }
+
+    /** GAME */
+
+    public static void finishTurn() {
+        if (interactedWithEntity) {
+            Game.finishTurn();
+            interactedWithEntity = false;
         }
     }
 

@@ -102,7 +102,7 @@ public class AttackingEntity extends Entity{
 
     /** INTERACTING */
 
-    public void attack(String targetFullName) {
+    public void attack(String targetFullName, boolean byArtificial) {
         if (this.canAttack(targetFullName)) {
             Entity.getEntity(targetFullName).healthPoints -= this.damagePoints;
             if (Entity.getEntity(targetFullName).selected) Entity.getEntity(targetFullName).updatePropertiesTable();
@@ -115,7 +115,10 @@ public class AttackingEntity extends Entity{
 
             this.informAttacked(targetFullName);
 
-            User.selectingEntityToAttack = false;
+            if (!byArtificial) {
+                User.selectingEntityToAttack = false;
+                User.interactedWithEntity = true;
+            }
         }
     }
 

@@ -34,7 +34,7 @@ public class AI {
     }
 
     void createConsole() {
-        Console.addInstance("ai", new Vector2(20, Gdx.graphics.getHeight() / 2), 0, 9000);
+        Console.addInstance("ai", new Vector2(20, Gdx.graphics.getHeight() / 2), 0, 20000);
     }
 
     public void doTurn() {

@@ -38,7 +38,9 @@ subtree name:"strategy1"
 import finishTurn:"com.turnbasedgame.game.Actors.AI.Tasks.FinishTurnTask"
 
 root
-    selector
-        $finishGame
-        $strategy1
+    sequence
+        alwaysSucceed
+            selector
+                $finishGame
+                $strategy1
         finishTurn

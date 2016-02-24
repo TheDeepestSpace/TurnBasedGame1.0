@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.turnbasedgame.game.Actors.Actors;
 import com.turnbasedgame.game.Actors.Camera;
+import com.turnbasedgame.game.Actors.User.User;
 import com.turnbasedgame.game.Global;
 import com.turnbasedgame.game.Screens.Screen;
 import com.turnbasedgame.game.TurnBasedGame;
@@ -85,7 +86,7 @@ public class GameScreen extends Screen {
                 "gameConsole",
                 new Vector2(Gdx.graphics.getWidth() / 2 - 200, Gdx.graphics.getHeight() / 2),
                 0,
-                6000
+                20000
         );
 
         // ACTORS
@@ -118,6 +119,7 @@ public class GameScreen extends Screen {
     @Override
     public void update() {
         Actors.update();
+        User.finishTurn();
     }
 
     /** RENDERING */

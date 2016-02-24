@@ -24,7 +24,7 @@ public class AttackTask extends LeafTask<AI> implements InformableTaskInterface 
 
     @Override
     public void informExecuted() {
-        Console.addLine("ai", "AI entered attack task ... ", Console.LineType.REGULAR);
+        Console.addLine("ai", "AI invoked 'attack' task ... ", Console.LineType.REGULAR);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class AttackTask extends LeafTask<AI> implements InformableTaskInterface 
             informFailed();
             return Status.FAILED;
         }else {
-            ((AttackingEntity) Entity.getEntity(attackerFullName)).attack(targetFullName);
+            ((AttackingEntity) Entity.getEntity(attackerFullName)).attack(targetFullName, true);
             informSucceeded();
             return Status.SUCCEEDED;
         }
