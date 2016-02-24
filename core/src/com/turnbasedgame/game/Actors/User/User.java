@@ -1,10 +1,14 @@
 package com.turnbasedgame.game.Actors.User;
 
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.turnbasedgame.game.Actors.Camera;
 import com.turnbasedgame.game.Actors.Entity.AttackingEntity;
 import com.turnbasedgame.game.Actors.Entity.Entity;
+import com.turnbasedgame.game.Actors.Entity.MovingEntity;
+import com.turnbasedgame.game.Actors.Grid.Grid;
+import com.turnbasedgame.game.Actors.Grid.GridNodeType;
 import com.turnbasedgame.game.Utilities.Game;
 
 /**
@@ -14,8 +18,10 @@ import com.turnbasedgame.game.Utilities.Game;
 public class User {
     public static boolean interactedWithEntity = false;
 
-    public static boolean selectingEntity = true;
-    public static boolean selectingEntityToAttack = false;
+    static boolean selectingEntity = true;
+    static boolean selectingEntityToAttack = false;
+    static boolean selectingNode = false;
+    static boolean selectingNodeToMoveTo = false;
 
     public static void actOnTouchUp(int screenX, int screenY) {
         if (selectingEntity) {
@@ -24,13 +30,23 @@ public class User {
             if (!pickedEntityName.equals("n/a")) {
                 if (selectingEntityToAttack) {
                     ((AttackingEntity) Entity.getSelectedEntity()).attack(pickedEntityName, false);
+                    selectingEntityToAttack = false;
                 }else {
                     deselectEntities();
                     Entity.getEntity(pickedEntityName).select(false);
                 }
             }else {
-                deselectEntities();
-                selectingEntityToAttack = false;
+                if (selectingEntityToAttack) selectingEntityToAttack = false;
+                else deselectEntities();
+            }
+        }
+        if (selectingNode) {
+            pickNode(screenX, screenY);
+
+            if (pickedNodeCoordinates.x != -1) {
+                if (selectingNodeToMoveTo) {
+                    ((MovingEntity) Entity.getSelectedEntity()).move(pickedNodeCoordinates);
+                }
             }
         }
     }
@@ -49,6 +65,57 @@ public class User {
         }
 
         pickedEntityName = "n/a";
+    }
+
+    /** SELECTING NODE */
+
+    static Vector3 pickedNodeCoordinates = new Vector3(-1, -1, -1);
+    static void pickNode(int screenX, int screenY) {
+        Ray ray = Camera.camera.getPickRay(screenX, screenY);
+
+        for (int x = 0; x < Grid.size.x; x++) {
+            for (int y = 0; y < Grid.size.y; y++) {
+                for (int z = 0; z < Grid.size.z; z++) {
+                    if (Intersector.intersectRayBoundsFast(ray, Grid.getNode(x, y, z).bounds)
+                            && Grid.getNode(x, y, z).type != GridNodeType.BLOCK) {
+                        pickedNodeCoordinates.set(x, y, z);
+                        return;
+                    }
+                }
+            }
+        }
+
+        pickedNodeCoordinates.set(-1, -1, -1);
+    }
+
+    /** SWITCHERS */
+
+    public static void selectingEntity() {
+        selectingEntity = true;
+        selectingEntityToAttack = false;
+        selectingNode = false;
+        selectingNodeToMoveTo = false;
+    }
+
+    public static void selectingEntityToAttack() {
+        selectingEntity = true;
+        selectingEntityToAttack = true;
+        selectingNode = false;
+        selectingNodeToMoveTo = false;
+    }
+
+    public static void selectingNode() {
+        selectingEntity = false;
+        selectingEntityToAttack = false;
+        selectingNode = true;
+        selectingNodeToMoveTo = false;
+    }
+
+    public static void selectingNodeToMoveTo() {
+        selectingEntity = false;
+        selectingEntityToAttack = false;
+        selectingNode = true;
+        selectingNodeToMoveTo = true;
     }
 
     /** SELECTING ENTITY TO ATTACK */

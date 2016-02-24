@@ -116,14 +116,13 @@ public class AttackingEntity extends Entity{
             this.informAttacked(targetFullName);
 
             if (!byArtificial) {
-                User.selectingEntityToAttack = false;
                 User.interactedWithEntity = true;
             }
         }
     }
 
     void selectTarget() {
-        User.selectingEntityToAttack = true;
+        User.selectingEntityToAttack();
         informSelectingTarget();
     }
 

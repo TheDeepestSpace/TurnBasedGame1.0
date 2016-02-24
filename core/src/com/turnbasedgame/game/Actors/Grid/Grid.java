@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.turnbasedgame.game.Actors.Entity.Entity;
 import com.turnbasedgame.game.TurnBasedGame;
 import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Rendering.Renderer;
@@ -420,6 +421,27 @@ public class Grid {
         }
         getNode(position).type = type;
         getNode(position).update();
+    }
+
+
+    public static void prepareGrid() {
+        for (int i = 0; i < Entity.list.size(); i++) {
+            Grid.setGridNode(Entity.list.get(i).getGridCoordinates(), GridNodeType.BLOCK);
+        }
+    }
+
+    public static void unprepareGrid() {
+        for (int i = 0; i < Entity.list.size(); i++) {
+            Grid.setGridNode(Entity.list.get(i).getGridCoordinates(), GridNodeType.BLANK);
+        }
+    }
+
+    public static void setStart(Vector3 gridCoordinates) {
+        Grid.setGridNode(gridCoordinates.cpy(), GridNodeType.START);
+    }
+
+    public static void setEnd(Vector3 gridCoordinates) {
+        Grid.setGridNode(gridCoordinates.cpy(), GridNodeType.END);
     }
 
     /** GETTERS / SETTERS */

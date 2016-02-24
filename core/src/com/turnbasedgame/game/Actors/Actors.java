@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.turnbasedgame.game.Actors.AI.AI;
 import com.turnbasedgame.game.Actors.Entity.AttackingEntity;
 import com.turnbasedgame.game.Actors.Entity.Entity;
+import com.turnbasedgame.game.Actors.Entity.MovingEntity;
 import com.turnbasedgame.game.Actors.Grid.Grid;
 import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Game;
@@ -36,8 +37,8 @@ public class Actors {
         Entity.setUp();
         AttackingEntity.setUp();
 
-        AttackingEntity.addInstance(new Vector3(1, 2, 18), true);
-        AttackingEntity.addInstance(new Vector3(4, 2, 15), false);
+        MovingEntity.addInstance(new Vector3(1, 2, 18), true);
+        MovingEntity.addInstance(new Vector3(4, 2, 15), false);
 
         informCreated();
 
