@@ -37,7 +37,7 @@ public class Actors {
         Entity.setUp();
         AttackingEntity.setUp();
 
-        MovingEntity.addInstance(new Vector3(1, 2, 18), true);
+        MovingEntity.addInstance(new Vector3(18, 2, 1), true);
         MovingEntity.addInstance(new Vector3(4, 2, 15), false);
 
         informCreated();

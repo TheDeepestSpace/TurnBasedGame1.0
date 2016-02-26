@@ -43,7 +43,9 @@ public class Console {
         SUCCESS,
         INITIALISED,
         DISPOSED,
-        SPAWNED
+        SPAWNED,
+        PHASE,
+        TIP
     }
 
     /** INITIALISING */
@@ -169,6 +171,8 @@ public class Console {
         else if (lineType == LineType.INITIALISED) return Color.GOLD;
         else if (lineType == LineType.DISPOSED) return Color.ORANGE;
         else if (lineType == LineType.SPAWNED) return Color.LIME;
+        else if (lineType == LineType.PHASE) return Color.MAROON;
+        else if (lineType == LineType.TIP) return Color.PURPLE;
         else return Color.BLACK;
     }
 

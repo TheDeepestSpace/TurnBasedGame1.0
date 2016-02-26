@@ -25,6 +25,10 @@ public class AttackingEntity extends Entity{
 
     int damagePoints;
 
+    /* FLAGS / TRIGGERS */
+
+    boolean inAttackingPhase;
+
     /** INITIALISING */
 
     @Override
@@ -33,6 +37,8 @@ public class AttackingEntity extends Entity{
 
         this.killsCount = 0;
         this.damagePoints = 0;
+
+        this.inAttackingPhase = false;
     }
 
     /** CREATING AND SETTING UP */
@@ -53,6 +59,7 @@ public class AttackingEntity extends Entity{
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        enterAttackingPhase();
                         selectTarget();
                     }
                 }
@@ -102,6 +109,15 @@ public class AttackingEntity extends Entity{
 
     /** INTERACTING */
 
+    public void enterAttackingPhase() {
+        this.informEnteredAttackingPhase();
+        this.inAttackingPhase = true;
+    }
+
+    public void escapeAttackingPhase() {
+        this.informEscapedAttackingPhase();
+    }
+
     public void attack(String targetFullName, boolean byArtificial) {
         if (this.canAttack(targetFullName)) {
             Entity.getEntity(targetFullName).healthPoints -= this.damagePoints;
@@ -118,6 +134,8 @@ public class AttackingEntity extends Entity{
             if (!byArtificial) {
                 User.interactedWithEntity = true;
             }
+
+            this.escapeAttackingPhase();
         }
     }
 
@@ -177,6 +195,14 @@ public class AttackingEntity extends Entity{
     }
 
     static void informSelectingTarget() {
-        Console.addLine("gameConsole", "Click on entity to select it as target", Console.LineType.WARNING);
+        Console.addLine("gameConsole", "Click on entity to select it as target", Console.LineType.TIP);
+    }
+
+    void informEnteredAttackingPhase() {
+        Console.addLine("gameConsole", this.fullName + " started attacking phase", Console.LineType.PHASE);
+    }
+
+    void informEscapedAttackingPhase() {
+        Console.addLine("gameConsole", this.fullName + " escaped attacking phase", Console.LineType.PHASE);
     }
 }

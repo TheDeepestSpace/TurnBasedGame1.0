@@ -40,6 +40,7 @@ public class AttackTask extends LeafTask<AI> implements InformableTaskInterface 
     @Override
     public Status execute() {
         informExecuted();
+        ((AttackingEntity) Entity.getEntity(attackerFullName)).enterAttackingPhase();
         if (attackerFullName.equals(" ") || attackerFullName == null) {
             failReason = "attacker's name is not valid";
             informFailed();

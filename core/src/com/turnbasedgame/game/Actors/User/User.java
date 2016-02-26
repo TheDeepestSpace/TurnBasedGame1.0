@@ -36,7 +36,10 @@ public class User {
                     Entity.getEntity(pickedEntityName).select(false);
                 }
             }else {
-                if (selectingEntityToAttack) selectingEntityToAttack = false;
+                if (selectingEntityToAttack) {
+                    selectingEntityToAttack = false;
+                    ((AttackingEntity) Entity.getSelectedEntity()).escapeAttackingPhase();
+                }
                 else deselectEntities();
             }
         }
