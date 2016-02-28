@@ -247,7 +247,7 @@ public class Entity {
     }
 
     void updateSightRange() {
-        this.sightRange = (int) (this.gridCoordinates.y * 2.5f) + 1;
+        this.sightRange = 4 + (int) (this.gridCoordinates.y);
         if (this.selected) this.updatePropertiesTable();
     }
 

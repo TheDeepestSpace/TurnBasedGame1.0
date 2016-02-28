@@ -62,7 +62,7 @@ public class Grid {
         name = "gameGrid";
         size = new Vector3(20, 10, 20);
 
-        gridLayoutName = "default";
+        gridLayoutName = "clear";
         gridLayoutLocal = true;
 
         gridModel = new Model();

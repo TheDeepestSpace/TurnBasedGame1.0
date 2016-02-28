@@ -55,4 +55,8 @@ public class AI {
 
     public String strategy1attackerName;
     public String strategy1targetName;
+
+    /** STRATEGY #2 */
+
+    public String strategy2entityName;
 }
