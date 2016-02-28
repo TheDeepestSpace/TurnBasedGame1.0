@@ -62,6 +62,7 @@ public class Game {
     static void goToNextTurn() {
         aiTurn = !aiTurn;
 
+        Console.addLine("gameConsole", "----------------------------------------------", Console.LineType.ERROR);
         startTurn();
     }
 }

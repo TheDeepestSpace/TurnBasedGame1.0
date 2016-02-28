@@ -1,9 +1,3 @@
-# ENTITY INTERACTION TASKS #
-
-import killEntity:"com.turnbasedgame.game.Actors.AI.Tasks.EntityInteraction.Entity.KillEntityTask"
-
-import attackEntity:"com.turnbasedgame.game.Actors.AI.Tasks.EntityInteraction.AttackingEntity.AttackTask"
-
 # FINISH GAME B-TREE TASKS / CONDITIONS #
 
 import finishGame:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.FinishGameTree.FinishGameTask"
@@ -39,8 +33,9 @@ import finishTurn:"com.turnbasedgame.game.Actors.AI.Tasks.FinishTurnTask"
 
 root
     sequence
-        alwaysSucceed
-            selector
-                $finishGame
-                $strategy1
-        finishTurn
+        selector
+            $finishGame
+            sequence
+                alwaysSucceed
+                    $strategy1
+                finishTurn

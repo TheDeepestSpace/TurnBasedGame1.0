@@ -831,7 +831,7 @@ public class DefaultShader extends BaseShader {
                 program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position.x, pointLights[i].position.y,
                         pointLights[i].position.z);
                 if (i < Entity.list.size()) {
-                    program.setUniformf(idx + pointLightsRadiusOffset, (float) Entity.list.get(i).getRadiusOfSight() * 5f);
+                    program.setUniformf(idx + pointLightsRadiusOffset, (float) Entity.list.get(i).getSightRange() * 5f);
                     program.setUniformf(idx + pointLightsDisplacedPositionOffset, Entity.list.get(i).getSceneCoordinates());
                 }
                 if (pointLightsIntensityOffset >= 0) program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);

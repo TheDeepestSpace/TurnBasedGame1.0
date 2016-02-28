@@ -5,6 +5,7 @@ import com.turnbasedgame.game.Actors.AI.AI;
 import com.turnbasedgame.game.Actors.Entity.AttackingEntity;
 import com.turnbasedgame.game.Actors.Entity.Entity;
 import com.turnbasedgame.game.Actors.Entity.MovingEntity;
+import com.turnbasedgame.game.Actors.Entity.Properties.Phase;
 import com.turnbasedgame.game.Actors.Grid.Grid;
 import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Game;
@@ -22,6 +23,7 @@ public class Actors {
         Camera.initialise();
         Grid.initialise();
         Entity.initialiseClass();
+        Phase.initialiseClass();
         informInitialised();
 
         gameAI = new AI();

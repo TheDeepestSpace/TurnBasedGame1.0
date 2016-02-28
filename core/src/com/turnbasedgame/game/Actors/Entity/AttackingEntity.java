@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.turnbasedgame.game.Actors.Entity.Properties.Phase;
 import com.turnbasedgame.game.Actors.User.User;
 import com.turnbasedgame.game.UserInterface.Actors.Button;
 import com.turnbasedgame.game.UserInterface.Actors.Log;
@@ -59,10 +60,37 @@ public class AttackingEntity extends Entity{
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        enterAttackingPhase();
-                        selectTarget();
+                        phases.get(1).enter();
+                        phases.get(1).execute();
                     }
                 }
+        );
+    }
+
+    @Override
+    void setUpPhases() {
+        super.setUpPhases();
+
+        this.phases.add(
+                new Phase() {
+                    @Override
+                    public void enter() {
+                        escapeCurrentPhase();
+                        super.enter();
+                    }
+
+                    @Override
+                    public void execute() {
+                        super.execute();
+                        selectTarget();
+                    }
+
+                    @Override
+                    public void escape() {
+                        super.escape();
+                        User.selectingEntity();
+                    }
+                }.setUp("attacking", false, this.fullName)
         );
     }
 
@@ -109,15 +137,6 @@ public class AttackingEntity extends Entity{
 
     /** INTERACTING */
 
-    public void enterAttackingPhase() {
-        this.informEnteredAttackingPhase();
-        this.inAttackingPhase = true;
-    }
-
-    public void escapeAttackingPhase() {
-        this.informEscapedAttackingPhase();
-    }
-
     public void attack(String targetFullName, boolean byArtificial) {
         if (this.canAttack(targetFullName)) {
             Entity.getEntity(targetFullName).healthPoints -= this.damagePoints;
@@ -135,7 +154,7 @@ public class AttackingEntity extends Entity{
                 User.interactedWithEntity = true;
             }
 
-            this.escapeAttackingPhase();
+            this.phases.get(1).escape();
         }
     }
 
@@ -150,7 +169,7 @@ public class AttackingEntity extends Entity{
         if (Geometry.inGridRange(
                 this.gridCoordinates,
                 Entity.getEntity(targetFullName).gridCoordinates,
-                this.radiusOfSight,
+                this.sightRange,
                 0
         )) {
             if ((this.artificial && Entity.getEntity(targetFullName).artificial)
@@ -196,13 +215,5 @@ public class AttackingEntity extends Entity{
 
     static void informSelectingTarget() {
         Console.addLine("gameConsole", "Click on entity to select it as target", Console.LineType.TIP);
-    }
-
-    void informEnteredAttackingPhase() {
-        Console.addLine("gameConsole", this.fullName + " started attacking phase", Console.LineType.PHASE);
-    }
-
-    void informEscapedAttackingPhase() {
-        Console.addLine("gameConsole", this.fullName + " escaped attacking phase", Console.LineType.PHASE);
     }
 }

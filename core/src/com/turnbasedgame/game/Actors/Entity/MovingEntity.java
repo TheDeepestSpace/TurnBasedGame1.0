@@ -3,6 +3,7 @@ package com.turnbasedgame.game.Actors.Entity;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.turnbasedgame.game.Actors.Entity.Properties.Phase;
 import com.turnbasedgame.game.Actors.Grid.Grid;
 import com.turnbasedgame.game.Actors.User.User;
 import com.turnbasedgame.game.UserInterface.Actors.Button;
@@ -49,9 +50,37 @@ public class MovingEntity extends AttackingEntity {
         this.listeners.add(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                User.selectingNodeToMoveTo();
+                phases.get(2).enter();
+                phases.get(2).execute();
             }
         });
+    }
+
+    @Override
+    void setUpPhases() {
+        super.setUpPhases();
+
+        this.phases.add(
+                new Phase() {
+                    @Override
+                    public void enter() {
+                        escapeCurrentPhase();
+                        super.enter();
+                    }
+
+                    @Override
+                    public void execute() {
+                        super.execute();
+                        selectNodeToMoveTo();
+                    }
+
+                    @Override
+                    public void escape() {
+                        super.escape();
+                        User.selectingEntity();
+                    }
+                }.setUp("moving", false, this.fullName)
+        );
     }
 
     @Override
@@ -76,11 +105,23 @@ public class MovingEntity extends AttackingEntity {
 
     /** INTERACTING */
 
-    public void move(Vector3 targetNodeGridCoordinates) {
+    void selectNodeToMoveTo() {
+        User.selectingNodeToMoveTo();
+        this.informSelectingNodeToMoveTo();
+    }
+
+    public void move(Vector3 targetNodeGridCoordinates, boolean byArtificial) {
         if (this.canReach(targetNodeGridCoordinates)) {
+            this.informMoved(targetNodeGridCoordinates);
             this.gridCoordinates = targetNodeGridCoordinates.cpy();
             this.updateSceneCoordinates();
             this.updateModelPosition();
+
+            if (!byArtificial) {
+                User.interactedWithEntity = true;
+            }
+
+            this.phases.get(2).escape();
         }
     }
 
@@ -90,7 +131,7 @@ public class MovingEntity extends AttackingEntity {
         if (Geometry.inGridRange(
                 this.gridCoordinates,
                 targetNodeGridCoordinates,
-                this.radiusOfSight,
+                this.sightRange,
                 0
         )) {
             if (nodeClear(targetNodeGridCoordinates)) {
@@ -145,5 +186,13 @@ public class MovingEntity extends AttackingEntity {
 
     void informCouldNotFindPath() {
         Console.addLine("gameConsole", "Could not ind path to selected node", Console.LineType.ERROR);
+    }
+
+    void informSelectingNodeToMoveTo() {
+        Console.addLine("gameConsole", "Click on node to move to", Console.LineType.TIP);
+    }
+
+    void informMoved(Vector3 targetNodeGridCoordinates) {
+        Console.addLine("gameConsole", this.fullName + " moved: " + this.gridCoordinates + " -> " + targetNodeGridCoordinates, Console.LineType.REGULAR);
     }
 }

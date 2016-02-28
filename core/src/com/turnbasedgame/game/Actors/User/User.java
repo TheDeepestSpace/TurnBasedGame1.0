@@ -30,15 +30,14 @@ public class User {
             if (!pickedEntityName.equals("n/a")) {
                 if (selectingEntityToAttack) {
                     ((AttackingEntity) Entity.getSelectedEntity()).attack(pickedEntityName, false);
-                    selectingEntityToAttack = false;
                 }else {
                     deselectEntities();
                     Entity.getEntity(pickedEntityName).select(false);
                 }
             }else {
                 if (selectingEntityToAttack) {
-                    selectingEntityToAttack = false;
-                    ((AttackingEntity) Entity.getSelectedEntity()).escapeAttackingPhase();
+                    User.selectingEntity();
+                    Entity.getSelectedEntity().getPhases().get(1).escape();
                 }
                 else deselectEntities();
             }
@@ -48,7 +47,12 @@ public class User {
 
             if (pickedNodeCoordinates.x != -1) {
                 if (selectingNodeToMoveTo) {
-                    ((MovingEntity) Entity.getSelectedEntity()).move(pickedNodeCoordinates);
+                    ((MovingEntity) Entity.getSelectedEntity()).move(pickedNodeCoordinates, false);
+                }
+            }else {
+                if (selectingNodeToMoveTo) {
+                    User.selectingEntity();
+                    Entity.getSelectedEntity().getPhases().get(2).escape();
                 }
             }
         }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.turnbasedgame.game.Actors.Entity.Properties.Phase;
 import com.turnbasedgame.game.Actors.User.User;
 import com.turnbasedgame.game.Global;
 import com.turnbasedgame.game.TurnBasedGame;
@@ -52,7 +53,7 @@ public class Entity {
 
     Vector3 modelSize;
 
-    int radiusOfSight;
+    int sightRange;
     int initialHealthPoints;
 
     /* VISUALISING */
@@ -60,7 +61,7 @@ public class Entity {
     Model model;
     ModelInstance modelInstance;
 
-    PointLight sightRange;
+    PointLight sightRangeLight;
     Vector3 pointLightSceneCoordinates;
 
     /* STATS / TRACKING */
@@ -71,6 +72,7 @@ public class Entity {
 
     static Table actionsTable;
     ArrayList<ClickListener> listeners;
+    ArrayList<Phase> phases;
 
     /** INITIALISING */
 
@@ -108,10 +110,11 @@ public class Entity {
         this.artificial = false;
         this.selected = false;
         this.healthPoints = 0;
-        this.radiusOfSight = 0;
+        this.sightRange = 0;
         this.initialHealthPoints = 0;
         this.pointLightSceneCoordinates = new Vector3();
         this.listeners = new ArrayList<ClickListener>();
+        this.phases = new ArrayList<Phase>();
     }
 
     Entity() {
@@ -137,6 +140,7 @@ public class Entity {
         this.setUpModel();
         this.setUpPointLight();
         if (!this.artificial) this.setUpListeners();
+        this.setUpPhases();
         this.informCreated();
     }
 
@@ -150,11 +154,11 @@ public class Entity {
     void setUpPointLight() {
         if (this.artificial) {
             TurnBasedGame.gameScreen.environment.add(
-                    this.sightRange = new PointLight().set(new Color(0.5f, 0.2f, 0.2f, 1f), null, 30)
+                    this.sightRangeLight = new PointLight().set(new Color(0.5f, 0.2f, 0.2f, 1f), null, 30)
             );
         } else {
             TurnBasedGame.gameScreen.environment.add(
-                    this.sightRange = new PointLight().set(new Color(0.2f, 0.2f, 0.5f, 1f), null, 30)
+                    this.sightRangeLight = new PointLight().set(new Color(0.2f, 0.2f, 0.5f, 1f), null, 30)
             );
         }
         this.updatePointLight();
@@ -165,16 +169,34 @@ public class Entity {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        die(false);
+                        phases.get(0).enter();
                     }
                 }
+        );
+    }
+
+    void setUpPhases() {
+        this.phases.add(
+                new Phase() {
+                    @Override
+                    public void enter() {
+                        escapeCurrentPhase();
+                        super.enter();
+                    }
+
+                    @Override
+                    public void execute() {
+                        super.execute();
+                        die(false);
+                    }
+                }.setUp("die", true, this.fullName)
         );
     }
 
     void setUpSettableProperties() {
         this.fullName = className + "_" + this.listIndex;
         this.modelSize.set(1, 2, 1);
-        this.radiusOfSight = 5;
+        this.sightRange = 5;
         this.healthPoints = this.initialHealthPoints = 100;
     }
 
@@ -221,6 +243,12 @@ public class Entity {
     void updateModelPosition() {
         this.modelInstance.transform.setToTranslation(this.sceneCoordinates);
         this.updateModelBoundingBox();
+        this.updateSightRange();
+    }
+
+    void updateSightRange() {
+        this.sightRange = (int) (this.gridCoordinates.y * 2.5f) + 1;
+        if (this.selected) this.updatePropertiesTable();
     }
 
     static Vector3 boundsMax = new Vector3();
@@ -237,7 +265,7 @@ public class Entity {
 
     void updatePointLight() {
         this.updatePointLightSceneCoordinates();
-        this.sightRange.setPosition(this.pointLightSceneCoordinates);
+        this.sightRangeLight.setPosition(this.pointLightSceneCoordinates);
     }
 
     void updatePointLightSceneCoordinates() {
@@ -255,7 +283,7 @@ public class Entity {
             Log.getLog("ENTITY_PROPERTIES_TABLE_ARTIFICIAL").setText("User driven");
         }
         Log.getLog("ENTITY_PROPERTIES_TABLE_GRID_COORDINATES").setText("grid coordinates: " + this.gridCoordinates);
-        Log.getLog("ENTITY_PROPERTIES_TABLE_RANGE_OF_SIGHT").setText("range of sight: " + this.radiusOfSight);
+        Log.getLog("ENTITY_PROPERTIES_TABLE_RANGE_OF_SIGHT").setText("range of sight: " + this.sightRange);
     }
 
     void setUpActionsTable() {
@@ -301,6 +329,15 @@ public class Entity {
         }
     }
 
+    void escapeCurrentPhase() {
+        for (int i = 0; i < this.phases.size(); i++) {
+            if (this.phases.get(i).getStatus() == Phase.Status.RUNNING) {
+                this.phases.get(i).escape();
+                return;
+            }
+        }
+    }
+
     /** GETTERS / SETTERS */
 
     public static Entity getEntity(String fullName) {
@@ -329,8 +366,8 @@ public class Entity {
         return this.sceneCoordinates.cpy();
     }
 
-    public int getRadiusOfSight() {
-        return this.radiusOfSight;
+    public int getSightRange() {
+        return this.sightRange;
     }
 
     public ModelInstance getModelInstance() {
@@ -343,6 +380,10 @@ public class Entity {
 
     public boolean isArtificial() {
         return this.artificial;
+    }
+
+    public ArrayList<Phase> getPhases() {
+        return this.phases;
     }
 
     /** RENDERING */
@@ -377,7 +418,7 @@ public class Entity {
         this.informDisposed();
 
         this.model.dispose();
-        TurnBasedGame.gameScreen.environment.remove(this.sightRange);
+        TurnBasedGame.gameScreen.environment.remove(this.sightRangeLight);
     }
 
     /** INFORMING */

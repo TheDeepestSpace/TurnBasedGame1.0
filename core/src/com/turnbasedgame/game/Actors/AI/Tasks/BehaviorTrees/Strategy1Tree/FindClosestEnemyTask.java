@@ -38,9 +38,10 @@ public class FindClosestEnemyTask extends LeafTask<AI> implements InformableTask
 
         float lastDistance = Float.MAX_VALUE;
         float currentDistance;
+        closestTargetName = "n/a";
         for (int i = 0; i < Entity.aiList.size(); i++) {
             for (int j = 0; j < Entity.userList.size(); j++) {
-                if (Geometry.inGridRange(Entity.aiList.get(i).getGridCoordinates(), Entity.userList.get(j).getGridCoordinates(), Entity.aiList.get(i).getRadiusOfSight(), 0)) {
+                if (Geometry.inGridRange(Entity.aiList.get(i).getGridCoordinates(), Entity.userList.get(j).getGridCoordinates(), Entity.aiList.get(i).getSightRange(), 0)) {
                     currentDistance = Entity.aiList.get(i).getGridCoordinates().dst(Entity.userList.get(j).getGridCoordinates());
                     if (currentDistance < lastDistance) {
                         lastDistance = currentDistance;

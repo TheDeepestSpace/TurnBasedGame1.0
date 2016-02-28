@@ -13,6 +13,7 @@ import com.turnbasedgame.game.Utilities.Game;
 public class FinishTurnTask extends LeafTask<AI> implements InformableTaskInterface {
     @Override
     public Status execute() {
+        Console.addLine("ai", "----------------------------------------------", Console.LineType.ERROR);
         Game.finishTurn();
 
         return Status.SUCCEEDED;
