@@ -59,4 +59,5 @@ public class AI {
     /** STRATEGY #2 */
 
     public String strategy2entityName;
+    public int strategy2direction = -1;
 }

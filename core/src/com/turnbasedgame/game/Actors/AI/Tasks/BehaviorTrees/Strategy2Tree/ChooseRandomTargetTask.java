@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class ChooseRandomTargetTask extends LeafTask<AI> implements InformableTaskInterface{
     Random random = new Random(System.nanoTime());
-    String entityFullName;
+    String entityFullName = "n/a";
 
     @Override
     public void informExecuted() {
@@ -30,16 +30,20 @@ public class ChooseRandomTargetTask extends LeafTask<AI> implements InformableTa
 
     @Override
     public void informFailed() {
-
+        Console.addLine("ai", "entity for strategy 2 already chosen: " + entityFullName, Console.LineType.ERROR);
     }
 
     @Override
     public Status execute() {
         informExecuted();
-        int entityListIndex = random.nextInt(Entity.aiList.size());
-        entityFullName = Entity.aiList.get(entityListIndex).getFullName();
-        Actors.gameAI.strategy2entityName = entityFullName;
-        informSucceeded();
+        if (entityFullName.equals("n/a") || entityFullName == null) {
+            int entityListIndex = random.nextInt(Entity.aiList.size());
+            entityFullName = Entity.aiList.get(entityListIndex).getFullName();
+            Actors.gameAI.strategy2entityName = entityFullName;
+            informSucceeded();
+        } else {
+            informFailed();
+        }
 
         return Status.SUCCEEDED;
     }

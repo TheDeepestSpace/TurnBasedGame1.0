@@ -19,7 +19,7 @@ public class AllyExistsCondition extends LeafTask<AI> implements InformableTaskI
 
     @Override
     public void informSucceeded() {
-        Console.addLine("ai", "Ally exists!", Console.LineType.SUCCESS);
+
     }
 
     @Override

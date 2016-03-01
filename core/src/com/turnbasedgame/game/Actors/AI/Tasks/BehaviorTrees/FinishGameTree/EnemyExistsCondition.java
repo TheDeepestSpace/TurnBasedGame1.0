@@ -19,7 +19,7 @@ public class EnemyExistsCondition extends LeafTask<AI> implements InformableTask
 
     @Override
     public void informSucceeded() {
-        Console.addLine("ai", "Enemy exists!", Console.LineType.SUCCESS);
+
     }
 
     @Override

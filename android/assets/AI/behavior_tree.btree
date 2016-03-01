@@ -31,22 +31,22 @@ subtree name:"strategy1"
 # name: strategy2
 
 import strategy2chooseRandomEntity:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChooseRandomTargetTask"
-#import strategy2canMove?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.CanMoveCondition"
-#import strategy2chosenDirection?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChosenDirectionCondition"
-#import strategy2chooseDirection:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChooseDirectionTask"
-#import strategy2move1TileInChosenDirection:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.Move1TileInChosenDirectionTask"
+import strategy2canMove?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.CanMoveCondition"
+import strategy2chosenDirection?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChosenDirectionCondition"
+import strategy2chooseDirection:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChooseDirectionTask"
+import strategy2move1TileInChosenDirection:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.Move1TileInChosenDirectionTask"
 
 subtree name:"strategy2"
     sequence
         strategy2chooseRandomEntity
-#        strategy2canMove?
-#        selector
-#            sequence
-#                invert
-#                    strategy2chosenDirection?
-#                strategy2chooseDirection
-#                strategy2move1TileInChosenDirection
-#            strategy2move1TileInChosenDirection
+        strategy2canMove?
+        selector
+            sequence
+                invert
+                    strategy2chosenDirection?
+                strategy2chooseDirection
+                strategy2move1TileInChosenDirection
+            strategy2move1TileInChosenDirection
 
 # ROOT TASKS / CONDITIONS#
 
