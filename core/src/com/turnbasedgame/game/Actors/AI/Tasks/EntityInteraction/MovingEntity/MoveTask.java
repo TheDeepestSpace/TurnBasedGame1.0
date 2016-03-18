@@ -17,10 +17,10 @@ import com.turnbasedgame.game.Utilities.Console;
  */
 public class MoveTask extends LeafTask<AI> implements InformableTaskInterface{
     @TaskAttribute (required = true)
-    String entityFullName;
+    public String entityFullName;
 
     @TaskAttribute (required = true)
-    Vector3 targetNodeGridCoordinates = new Vector3();
+    public Vector3 targetNodeGridCoordinates = new Vector3();
 
     Vector3 lastGridCoordinates = new Vector3();
     String failReason;

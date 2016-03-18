@@ -86,7 +86,7 @@ public class GameScreen extends Screen {
                 "gameConsole",
                 new Vector2(Gdx.graphics.getWidth() / 2 - 200, Gdx.graphics.getHeight() / 2),
                 0,
-                20000
+                60000
         );
 
         // ACTORS

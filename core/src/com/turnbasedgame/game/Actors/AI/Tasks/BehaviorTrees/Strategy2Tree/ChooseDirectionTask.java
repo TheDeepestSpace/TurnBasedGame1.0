@@ -40,30 +40,7 @@ public class ChooseDirectionTask extends LeafTask<AI> implements InformableTaskI
     public Status execute() {
         entityFullName = Actors.gameAI.strategy2entityName;
         informExecuted();
-        do {
-            chosenDirection = getRandomDirection();
-        }while (
-                chosenDirection == 1 && Grid.getNode(
-                        Entity.getEntity(entityFullName).getGridCoordinates().x + 1,
-                        Entity.getEntity(entityFullName).getGridCoordinates().y,
-                        Entity.getEntity(entityFullName).getGridCoordinates().z
-                ).type == GridNodeType.BLOCK
-                || chosenDirection == 3 && Grid.getNode(
-                        Entity.getEntity(entityFullName).getGridCoordinates().x - 1,
-                        Entity.getEntity(entityFullName).getGridCoordinates().y,
-                        Entity.getEntity(entityFullName).getGridCoordinates().z
-                ).type == GridNodeType.BLOCK
-                || chosenDirection == 2 && Grid.getNode(
-                        Entity.getEntity(entityFullName).getGridCoordinates().x,
-                        Entity.getEntity(entityFullName).getGridCoordinates().y,
-                        Entity.getEntity(entityFullName).getGridCoordinates().z + 1
-                ).type == GridNodeType.BLOCK
-                || chosenDirection == 4 && Grid.getNode(
-                        Entity.getEntity(entityFullName).getGridCoordinates().x,
-                        Entity.getEntity(entityFullName).getGridCoordinates().y,
-                        Entity.getEntity(entityFullName).getGridCoordinates().z - 1
-                ).type == GridNodeType.BLOCK
-                );
+        chosenDirection = getRandomDirection();
         Actors.gameAI.strategy2direction = chosenDirection;
         informSucceeded();
         return Status.SUCCEEDED;
