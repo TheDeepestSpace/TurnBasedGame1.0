@@ -47,7 +47,7 @@ public class ChooseDirectionTask extends LeafTask<AI> implements InformableTaskI
     }
 
     int getRandomDirection() {
-        return random.nextInt(4) + 1;
+        return random.nextInt(4);
     }
 
     @Override

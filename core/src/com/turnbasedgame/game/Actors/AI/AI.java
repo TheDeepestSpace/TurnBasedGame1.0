@@ -60,4 +60,5 @@ public class AI {
 
     public String strategy2entityName;
     public int strategy2direction = -1;
+    public boolean[] excludedDirections = {false, false, false, false};
 }

@@ -38,7 +38,7 @@ public class ChosenDirectionCondition extends LeafTask<AI> implements Informable
         if (direction == -1) {
             informFailed();
             return Status.FAILED;
-        }else if (direction < 0 || direction > 4) {
+        }else if (direction < 0 || direction > 3) {
             informFailed();
             return Status.FAILED;
         }else {

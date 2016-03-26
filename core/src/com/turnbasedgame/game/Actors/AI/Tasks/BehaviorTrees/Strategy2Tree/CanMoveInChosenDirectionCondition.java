@@ -40,7 +40,7 @@ public class CanMoveInChosenDirectionCondition extends LeafTask<AI> implements I
 
         informExecuted();
 
-        if (nextTileOutOfBounds() || nextTileBlocked()) {
+        if (tileExcluded()) {
             informFailed();
             return Status.FAILED;
         }
@@ -49,22 +49,22 @@ public class CanMoveInChosenDirectionCondition extends LeafTask<AI> implements I
     }
 
     boolean nextTileBlocked() {
-        return chosenDirection == 1 && Grid.getNode(
+        return chosenDirection == 0 && Grid.getNode(
                 Entity.getEntity(entityFullName).getGridCoordinates().x + 1,
                 Entity.getEntity(entityFullName).getGridCoordinates().y,
                 Entity.getEntity(entityFullName).getGridCoordinates().z
         ).type == GridNodeType.BLOCK
-                || chosenDirection == 3 && Grid.getNode(
+                || chosenDirection == 2 && Grid.getNode(
                 Entity.getEntity(entityFullName).getGridCoordinates().x - 1,
                 Entity.getEntity(entityFullName).getGridCoordinates().y,
                 Entity.getEntity(entityFullName).getGridCoordinates().z
         ).type == GridNodeType.BLOCK
-                || chosenDirection == 2 && Grid.getNode(
+                || chosenDirection == 1 && Grid.getNode(
                 Entity.getEntity(entityFullName).getGridCoordinates().x,
                 Entity.getEntity(entityFullName).getGridCoordinates().y,
                 Entity.getEntity(entityFullName).getGridCoordinates().z + 1
         ).type == GridNodeType.BLOCK
-                || chosenDirection == 4 && Grid.getNode(
+                || chosenDirection == 3 && Grid.getNode(
                 Entity.getEntity(entityFullName).getGridCoordinates().x,
                 Entity.getEntity(entityFullName).getGridCoordinates().y,
                 Entity.getEntity(entityFullName).getGridCoordinates().z - 1
@@ -72,10 +72,17 @@ public class CanMoveInChosenDirectionCondition extends LeafTask<AI> implements I
     }
 
     boolean nextTileOutOfBounds() {
-        return chosenDirection == 1 && Entity.getEntity(entityFullName).getGridCoordinates().x + 1 >= Grid.size.x ||
-                chosenDirection == 3 && Entity.getEntity(entityFullName).getGridCoordinates().x - 1 < 0 ||
-                chosenDirection == 2 && Entity.getEntity(entityFullName).getGridCoordinates().z + 1 >= Grid.size.z ||
-                chosenDirection == 4 && Entity.getEntity(entityFullName).getGridCoordinates().z - 1 < 0;
+        return chosenDirection == 0 && Entity.getEntity(entityFullName).getGridCoordinates().x + 1 >= Grid.size.x ||
+                chosenDirection == 2 && Entity.getEntity(entityFullName).getGridCoordinates().x - 1 < 0 ||
+                chosenDirection == 1 && Entity.getEntity(entityFullName).getGridCoordinates().z + 1 >= Grid.size.z ||
+                chosenDirection == 3 && Entity.getEntity(entityFullName).getGridCoordinates().z - 1 < 0;
+    }
+
+    boolean tileExcluded() {
+        return chosenDirection == 0 && Actors.gameAI.excludedDirections[0] ||
+                chosenDirection == 2 && Actors.gameAI.excludedDirections[2] ||
+                chosenDirection == 1 && Actors.gameAI.excludedDirections[1] ||
+                chosenDirection == 3 && Actors.gameAI.excludedDirections[3];
     }
 
     @Override

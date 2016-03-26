@@ -50,10 +50,10 @@ public class Move1TileInChosenDirectionTask extends LeafTask<AI> implements Info
     Vector3 getNewGridCoordinates() {
         int dir = getDirection();
 
-        if (dir == 1) return new Vector3(lastGridCoordinates.x + 1, lastGridCoordinates.y, lastGridCoordinates.z);
-        else if (dir == 3) return new Vector3(lastGridCoordinates.x - 1, lastGridCoordinates.y, lastGridCoordinates.z);
-        else if (dir == 2) return new Vector3(lastGridCoordinates.x, lastGridCoordinates.y, lastGridCoordinates.z + 1);
-        else if (dir == 4) return new Vector3(lastGridCoordinates.x, lastGridCoordinates.y, lastGridCoordinates.z - 1);
+        if (dir == 0) return new Vector3(lastGridCoordinates.x + 1, lastGridCoordinates.y, lastGridCoordinates.z);
+        else if (dir == 2) return new Vector3(lastGridCoordinates.x - 1, lastGridCoordinates.y, lastGridCoordinates.z);
+        else if (dir == 1) return new Vector3(lastGridCoordinates.x, lastGridCoordinates.y, lastGridCoordinates.z + 1);
+        else if (dir == 3) return new Vector3(lastGridCoordinates.x, lastGridCoordinates.y, lastGridCoordinates.z - 1);
         else return null;
     }
 

@@ -36,9 +36,23 @@ import strategy2chooseDirection:"com.turnbasedgame.game.Actors.AI.Tasks.Behavior
 import strategy2canMoveInChosenDirection?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.CanMoveInChosenDirectionCondition"
 import strategy2move1TileInChosenDirection:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.Move1TileInChosenDirectionTask"
 
+import strategy2resetDirections:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.Subtree1.ResetDirectionsTask"
+import strategy2ignoreDirectionsToSeenBounds:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.Subtree1.IgnoreDirectionsToSeenBoundsTask"
+import strategy2ignoreDirectionsToBounds:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.Subtree1.IgnoreDirectionsToBoundsTask"
+import strategy2ignoreDirectionsToBlockedTiles:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.Subtree1.IgnoreDirectionsToBlockedTilesTask"
+
+
+subtree name:"strategy2findIgnoredDirections"
+    sequence
+        strategy2resetDirections
+        strategy2ignoreDirectionsToSeenBounds
+        strategy2ignoreDirectionsToBounds
+        strategy2ignoreDirectionsToBlockedTiles
+
 subtree name:"strategy2"
     sequence
         strategy2chooseRandomEntity
+        $strategy2findIgnoredDirections
         sequence
             selector
                 sequence
