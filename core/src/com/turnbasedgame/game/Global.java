@@ -2,8 +2,11 @@ package com.turnbasedgame.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.turnbasedgame.game.UserInterface.GlobalUI;
@@ -18,6 +21,8 @@ public class Global {
     public static Preferences preferences;
     public static BitmapFont defaultFont;
     public static SpriteBatch spriteBatch;
+    public static FrameBuffer fb;
+    public static SpriteBatch fbBatch;
     public static Stage stage;
 
     /** INITIALISING */
@@ -25,6 +30,7 @@ public class Global {
     public static void initialise() {
         preferences = Gdx.app.getPreferences("GAME_PREFERENCES");
         defaultFont = new BitmapFont(Gdx.files.internal("UI/FONTS/font16.fnt"));
+        initialiseFrameBuffer();
         spriteBatch = new SpriteBatch();
         spriteBatch.enableBlending();
         stage = new Stage();
@@ -33,6 +39,15 @@ public class Global {
 
         GlobalUI.initialise();
         Console.initialiseInstances();
+    }
+
+    static void initialiseFrameBuffer() {
+        if (fb != null) fb.dispose();
+        fb = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 3, true);
+        fb.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        if (fbBatch != null) fbBatch.dispose();
+        fbBatch = new SpriteBatch();
     }
 
     /** CREATING AND SETTING */
@@ -60,6 +75,9 @@ public class Global {
     /** DISPOSING */
 
     public static void dispose() {
+        fb.dispose();
+        fbBatch.dispose();
+        spriteBatch.dispose();
         preferences.flush();
         GlobalUI.dispose();
         Console.disposeInstances();

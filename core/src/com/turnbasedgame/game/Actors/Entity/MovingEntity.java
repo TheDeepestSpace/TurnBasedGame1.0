@@ -3,12 +3,15 @@ package com.turnbasedgame.game.Actors.Entity;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.turnbasedgame.game.Actors.Actors;
 import com.turnbasedgame.game.Actors.Entity.Properties.Phase;
 import com.turnbasedgame.game.Actors.Grid.Grid;
 import com.turnbasedgame.game.Actors.User.User;
 import com.turnbasedgame.game.UserInterface.Actors.Button;
 import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Geometry;
+
+import java.util.ArrayList;
 
 /**
  * Created by Boris on 24.02.2016.
@@ -20,10 +23,22 @@ public class MovingEntity extends AttackingEntity {
     /* PROPERTIES */
 
     public Vector3 targetNodeGridCoordinates;
+    ArrayList<Vector3> path;
+
+    int currentPathItemIndex;
+    Vector3 gridNextCoordinates;
+    Vector3 movement;
+    int tileDivisionsOvercame;
+
+    static final int tileDivisions = 20;
 
     /* SETTABLE PROPERTIES */
 
     /* FLAGS / TRIGGERS */
+
+    boolean inMovement;
+    boolean reachedNextTile;
+    boolean movementByArtificial;
 
     /** INITIALISING */
     @Override
@@ -31,6 +46,16 @@ public class MovingEntity extends AttackingEntity {
         super.initialise();
 
         this.targetNodeGridCoordinates = new Vector3();
+        this.path = new ArrayList<Vector3>();
+
+        this.currentPathItemIndex = 0;
+        this.gridNextCoordinates = new Vector3();
+        this.movement = new Vector3();
+        this.tileDivisionsOvercame = 0;
+
+        this.inMovement = false;
+        this.reachedNextTile = true;
+        this.movementByArtificial = false;
     }
 
     /** CREATING AND SETTING UP */
@@ -103,6 +128,99 @@ public class MovingEntity extends AttackingEntity {
 
     /** UPDATING */
 
+    @Override
+    public void update() {
+        super.update();
+
+        if (this.inMovement && !this.isArtificial()) this.processMovement();
+    }
+
+    public void processMovement() {
+        this.updateNextPosition();
+        this.calculateMovement();
+        this.updatePosition();
+        this.reachTargetNode();
+    }
+
+    void updateNextPosition() {
+        if (this.currentPathItemIndex + 1 < this.path.size()) {
+            this.gridNextCoordinates.x = this.path.get(this.currentPathItemIndex + 1).x;
+            this.gridNextCoordinates.y = this.path.get(this.currentPathItemIndex + 1).y;
+            this.gridNextCoordinates.z = this.path.get(this.currentPathItemIndex + 1).z;
+        }
+    }
+
+    void calculateMovement() {
+        this.movement.x =
+                Geometry.getSceneCoordinates(this.gridNextCoordinates).x
+                        - Geometry.getSceneCoordinates(this.gridCoordinates).x;
+        this.movement.y =
+                Geometry.getSceneCoordinates(this.gridNextCoordinates).y
+                        - Geometry.getSceneCoordinates(this.gridCoordinates).y;
+        this.movement.z =
+                Geometry.getSceneCoordinates(this.gridNextCoordinates).z
+                        - Geometry.getSceneCoordinates(this.gridCoordinates).z;
+
+        this.movement.x /= tileDivisions;
+        this.movement.y /= tileDivisions;
+        this.movement.z /= tileDivisions;
+    }
+
+    void updatePosition() {
+        this.tileDivisionsOvercame++;
+        this.reachedNextTile = false;
+
+        if (this.tileDivisionsOvercame == tileDivisions) {
+            this.reachedNextTile = true;
+            this.tileDivisionsOvercame = 0;
+        }
+
+        if (this.reachedNextTile) {
+            this.gridCoordinates = this.gridNextCoordinates.cpy();
+            this.currentPathItemIndex++;
+            if (this.selected) this.updatePropertiesTable();
+        }
+
+        this.updateSceneCoordinates();
+        this.updateModelPosition();
+    }
+
+    @Override
+    void updateSceneCoordinates() {
+        this.sceneCoordinates.x = Geometry.getSceneCoordinates(this.gridCoordinates).x;
+
+        if (!this.reachedNextTile) {
+            this.sceneCoordinates.x += tileDivisionsOvercame * movement.x;
+        }
+
+        this.sceneCoordinates.y = Geometry.getSceneCoordinates(this.gridCoordinates).y;
+
+        if (!this.reachedNextTile) {
+            this.sceneCoordinates.y += tileDivisionsOvercame * movement.y;
+        }
+
+        this.sceneCoordinates.z = Geometry.getSceneCoordinates(this.gridCoordinates).z;
+
+        if (!this.reachedNextTile) {
+            this.sceneCoordinates.z += tileDivisionsOvercame * movement.z;
+        }
+    }
+
+    void reachTargetNode() {
+        if (this.gridCoordinates.x == this.targetNodeGridCoordinates.x
+                && this.gridCoordinates.y == this.targetNodeGridCoordinates.y
+                && this.gridCoordinates.z == this.targetNodeGridCoordinates.z) {
+            this.inMovement = false;
+            this.informMoved(targetNodeGridCoordinates);
+
+            if (!this.movementByArtificial) {
+                User.interactedWithEntity = true;
+            }
+
+            this.phases.get(2).escape();
+        }
+    }
+
     /** INTERACTING */
 
     void selectNodeToMoveTo() {
@@ -112,16 +230,10 @@ public class MovingEntity extends AttackingEntity {
 
     public void move(Vector3 targetNodeGridCoordinates, boolean byArtificial) {
         if (this.canReach(targetNodeGridCoordinates)) {
-            this.informMoved(targetNodeGridCoordinates);
-            this.gridCoordinates = targetNodeGridCoordinates.cpy();
-            this.updateSceneCoordinates();
-            this.updateModelPosition();
-
-            if (!byArtificial) {
-                User.interactedWithEntity = true;
-            }
-
-            this.phases.get(2).escape();
+            this.targetNodeGridCoordinates = targetNodeGridCoordinates.cpy();
+            this.movementByArtificial = byArtificial;
+            this.inMovement = true;
+            this.currentPathItemIndex = 0;
         }
     }
 
@@ -140,6 +252,7 @@ public class MovingEntity extends AttackingEntity {
                 Grid.setEnd(targetNodeGridCoordinates);
 
                 if (Grid.findPath() == 1) {
+                    this.savePath();
                     Grid.unprepareGrid();
                     return true;
                 }else {
@@ -158,6 +271,13 @@ public class MovingEntity extends AttackingEntity {
         }
     }
 
+    void savePath() {
+        this.path.clear();
+        for (int i = 0; i < Grid.finalPath.size; i++) {
+            this.path.add(Grid.finalPath.get(i).gridCoordinates.cpy());
+        }
+    }
+
     static boolean nodeClear(Vector3 nodeGridCoordinates) {
         for (int i = 0; i < Entity.list.size(); i++) {
             if (Entity.list.get(i).gridCoordinates.x == nodeGridCoordinates.x
@@ -168,6 +288,10 @@ public class MovingEntity extends AttackingEntity {
         }
 
         return true;
+    }
+
+    public boolean isInMovement() {
+        return inMovement;
     }
 
     /** RENDERING */

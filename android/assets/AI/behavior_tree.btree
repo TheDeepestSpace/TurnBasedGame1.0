@@ -30,7 +30,7 @@ subtree name:"strategy1"
 # SUBTREE #2 TASKS / CONDITIONS #
 # name: strategy2
 
-import strategy2chooseRandomEntity:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChooseRandomTargetTask"
+import strategy2chooseRandomEntity:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChooseRandomEntityTask"
 import strategy2chosenDirection?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChosenDirectionCondition"
 import strategy2chooseDirection:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.ChooseDirectionTask"
 import strategy2canMoveInChosenDirection?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy2Tree.CanMoveInChosenDirectionCondition"
@@ -53,16 +53,34 @@ subtree name:"strategy2"
     sequence
         strategy2chooseRandomEntity
         $strategy2findIgnoredDirections
-        sequence
-            selector
+        selector
+            sequence
+                strategy2chosenDirection?
+                strategy2canMoveInChosenDirection?
+            untilSuccess
                 sequence
-                    strategy2chosenDirection?
+                    strategy2chooseDirection
                     strategy2canMoveInChosenDirection?
-                untilSuccess
-                    sequence
-                        strategy2chooseDirection
-                        strategy2canMoveInChosenDirection?
+        untilSuccess
             strategy2move1TileInChosenDirection
+
+
+# SUBTREE #3 TASKS / CONDITIONS
+
+import strategy3checkHills:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy3Tree.CheckHillsTask"
+import strategy3chooseHill:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy3Tree.ChooseHillTask"
+import strategy3isHillReachable?:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy3Tree.HillReachableCondition"
+import strategy3moveToChosenHill:"com.turnbasedgame.game.Actors.AI.Tasks.BehaviorTrees.Strategy3Tree.MoveToChosenHillTask"
+
+subtree name:"strategy3"
+    sequence
+        strategy3checkHills
+        untilSuccess
+            sequence
+                strategy3chooseHill
+                strategy3isHillReachable?
+        untilSuccess
+            strategy3moveToChosenHill
 
 # ROOT TASKS / CONDITIONS#
 
@@ -75,5 +93,6 @@ root
             sequence
                 selector
                     $strategy1
+                    $strategy3
                     $strategy2
                 finishTurn

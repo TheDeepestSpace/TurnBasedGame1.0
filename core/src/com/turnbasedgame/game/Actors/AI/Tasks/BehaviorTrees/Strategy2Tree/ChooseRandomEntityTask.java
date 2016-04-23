@@ -14,7 +14,7 @@ import java.util.Random;
  * Created by Boris on 28.02.2016.
  * Project: TurnBasedGame1.0
  */
-public class ChooseRandomTargetTask extends LeafTask<AI> implements InformableTaskInterface{
+public class ChooseRandomEntityTask extends LeafTask<AI> implements InformableTaskInterface{
     Random random = new Random(System.nanoTime());
     String entityFullName = "n/a";
 

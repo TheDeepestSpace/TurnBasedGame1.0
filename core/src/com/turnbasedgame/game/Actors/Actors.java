@@ -7,8 +7,10 @@ import com.turnbasedgame.game.Actors.Entity.Entity;
 import com.turnbasedgame.game.Actors.Entity.MovingEntity;
 import com.turnbasedgame.game.Actors.Entity.Properties.Phase;
 import com.turnbasedgame.game.Actors.Grid.Grid;
+import com.turnbasedgame.game.Global;
 import com.turnbasedgame.game.Utilities.Console;
 import com.turnbasedgame.game.Utilities.Game;
+import com.turnbasedgame.game.Utilities.Rendering.Renderer;
 
 /**
  * Created by Boris on 10.02.2016.
@@ -57,8 +59,11 @@ public class Actors {
     /** RENDERING */
 
     public static void render() {
+        //Global.fb.begin();
         Grid.render();
         Entity.renderInstances();
+        Global.fb.end();
+        Renderer.renderFB();
         Camera.renderCenter();
     }
 

@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.btree.BehaviorTree;
 import com.badlogic.gdx.ai.btree.utils.BehaviorTreeParser;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.turnbasedgame.game.Utilities.Console;
+import com.turnbasedgame.game.Utilities.Game;
 
 import java.io.Reader;
+import java.util.ArrayList;
 
 /**
  * Created by Boris on 11.02.2016.
@@ -61,4 +64,11 @@ public class AI {
     public String strategy2entityName;
     public int strategy2direction = -1;
     public boolean[] excludedDirections = {false, false, false, false};
+
+    /** STRATEGY #3 */
+
+    public ArrayList<Vector3> hills = new ArrayList<Vector3>();
+    public ArrayList<Vector3> seenHills = new ArrayList<Vector3>();
+    public String strategy3entityName;
+    public Vector3 hillGridCoordinates = new Vector3();
 }

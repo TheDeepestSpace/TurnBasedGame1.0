@@ -5,9 +5,6 @@ import com.badlogic.gdx.ai.btree.Task;
 import com.turnbasedgame.game.Actors.AI.AI;
 import com.turnbasedgame.game.Actors.AI.Tasks.InformableTaskInterface;
 import com.turnbasedgame.game.Actors.Actors;
-import com.turnbasedgame.game.Actors.Entity.Entity;
-import com.turnbasedgame.game.Actors.Grid.Grid;
-import com.turnbasedgame.game.Actors.Grid.GridNodeType;
 import com.turnbasedgame.game.Utilities.Console;
 
 /**
@@ -17,6 +14,7 @@ import com.turnbasedgame.game.Utilities.Console;
 public class CanMoveInChosenDirectionCondition extends LeafTask<AI> implements InformableTaskInterface{
     String entityFullName;
     int chosenDirection;
+    String failReason;
 
     @Override
     public void informExecuted() {
@@ -30,7 +28,7 @@ public class CanMoveInChosenDirectionCondition extends LeafTask<AI> implements I
 
     @Override
     public void informFailed() {
-        Console.addLine("ai", entityFullName + " can not move in its direction!", Console.LineType.ERROR);
+        Console.addLine("ai", entityFullName + " can not move in " + chosenDirection + "direction! Reason: " + failReason, Console.LineType.ERROR);
     }
 
     @Override
@@ -40,7 +38,13 @@ public class CanMoveInChosenDirectionCondition extends LeafTask<AI> implements I
 
         informExecuted();
 
+        if (noDirectionsAvailable()) {
+            failReason = "no direction available";
+            informFailed();
+            return Status.FAILED;
+        }
         if (tileExcluded()) {
+            failReason = "chosen direction excluded";
             informFailed();
             return Status.FAILED;
         }
@@ -48,34 +52,11 @@ public class CanMoveInChosenDirectionCondition extends LeafTask<AI> implements I
         return Status.SUCCEEDED;
     }
 
-    boolean nextTileBlocked() {
-        return chosenDirection == 0 && Grid.getNode(
-                Entity.getEntity(entityFullName).getGridCoordinates().x + 1,
-                Entity.getEntity(entityFullName).getGridCoordinates().y,
-                Entity.getEntity(entityFullName).getGridCoordinates().z
-        ).type == GridNodeType.BLOCK
-                || chosenDirection == 2 && Grid.getNode(
-                Entity.getEntity(entityFullName).getGridCoordinates().x - 1,
-                Entity.getEntity(entityFullName).getGridCoordinates().y,
-                Entity.getEntity(entityFullName).getGridCoordinates().z
-        ).type == GridNodeType.BLOCK
-                || chosenDirection == 1 && Grid.getNode(
-                Entity.getEntity(entityFullName).getGridCoordinates().x,
-                Entity.getEntity(entityFullName).getGridCoordinates().y,
-                Entity.getEntity(entityFullName).getGridCoordinates().z + 1
-        ).type == GridNodeType.BLOCK
-                || chosenDirection == 3 && Grid.getNode(
-                Entity.getEntity(entityFullName).getGridCoordinates().x,
-                Entity.getEntity(entityFullName).getGridCoordinates().y,
-                Entity.getEntity(entityFullName).getGridCoordinates().z - 1
-        ).type == GridNodeType.BLOCK;
-    }
-
-    boolean nextTileOutOfBounds() {
-        return chosenDirection == 0 && Entity.getEntity(entityFullName).getGridCoordinates().x + 1 >= Grid.size.x ||
-                chosenDirection == 2 && Entity.getEntity(entityFullName).getGridCoordinates().x - 1 < 0 ||
-                chosenDirection == 1 && Entity.getEntity(entityFullName).getGridCoordinates().z + 1 >= Grid.size.z ||
-                chosenDirection == 3 && Entity.getEntity(entityFullName).getGridCoordinates().z - 1 < 0;
+    boolean noDirectionsAvailable(){
+        return Actors.gameAI.excludedDirections[0] &&
+                Actors.gameAI.excludedDirections[1] &&
+                Actors.gameAI.excludedDirections[2] &&
+                Actors.gameAI.excludedDirections[3];
     }
 
     boolean tileExcluded() {

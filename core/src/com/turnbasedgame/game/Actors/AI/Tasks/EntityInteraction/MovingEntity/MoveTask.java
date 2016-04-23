@@ -16,14 +16,12 @@ import com.turnbasedgame.game.Utilities.Console;
  * Project: TurnBasedGame1.0
  */
 public class MoveTask extends LeafTask<AI> implements InformableTaskInterface{
-    @TaskAttribute (required = true)
     public String entityFullName;
-
-    @TaskAttribute (required = true)
     public Vector3 targetNodeGridCoordinates = new Vector3();
 
-    Vector3 lastGridCoordinates = new Vector3();
+    public Vector3 lastGridCoordinates = new Vector3();
     String failReason;
+    public boolean fresh = true;
 
     @Override
     public void informExecuted() {
@@ -40,9 +38,12 @@ public class MoveTask extends LeafTask<AI> implements InformableTaskInterface{
         Console.addLine("ai", "Could not move. Reason: " + failReason, Console.LineType.ERROR);
     }
 
+
+
     @Override
     public Status execute() {
-        informExecuted();
+        if (this.fresh) informExecuted();
+
         if (entityFullName.equals("n/a") || entityFullName == null) {
             failReason = "entity's name is not valid";
             informFailed();
@@ -57,12 +58,18 @@ public class MoveTask extends LeafTask<AI> implements InformableTaskInterface{
             failReason = "entity can't be moved";
             informFailed();
             return Status.FAILED;
-        }else {
-            Entity.getEntity(entityFullName).getPhases().get(2).enter();
-            lastGridCoordinates = Entity.getEntity(entityFullName).getGridCoordinates();
-            ((MovingEntity) Entity.getEntity(entityFullName)).move(targetNodeGridCoordinates, true);
+        }else if (!this.fresh && !((MovingEntity) Entity.getEntity(entityFullName)).isInMovement()) {
             informSucceeded();
             return Status.SUCCEEDED;
+        }else /*if (this.getStatus() != Status.RUNNING && !((MovingEntity) Entity.getEntity(entityFullName)).isInMovement())*/{
+            if (this.fresh) {
+                Entity.getEntity(entityFullName).getPhases().get(2).enter();
+                lastGridCoordinates = Entity.getEntity(entityFullName).getGridCoordinates();
+                ((MovingEntity) Entity.getEntity(entityFullName)).move(targetNodeGridCoordinates, true);
+            }else {
+                ((MovingEntity) Entity.getEntity(entityFullName)).processMovement();
+            }
+            return Status.FAILED;
         }
     }
 

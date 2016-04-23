@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -86,7 +88,7 @@ public class GameScreen extends Screen {
                 "gameConsole",
                 new Vector2(Gdx.graphics.getWidth() / 2 - 200, Gdx.graphics.getHeight() / 2),
                 0,
-                60000
+                10000
         );
 
         // ACTORS
@@ -120,6 +122,7 @@ public class GameScreen extends Screen {
     public void update() {
         Actors.update();
         User.finishTurn();
+        //Actors.gameAI.finishTurn();
     }
 
     /** RENDERING */
@@ -127,8 +130,8 @@ public class GameScreen extends Screen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        Renderer.clearScreen();
-
+        Global.fb.begin();
+        Renderer.clearGameScreen();
         Actors.render();
     }
 
